@@ -1,0 +1,78 @@
+:root {
+  color: #10243e;
+  background: #f3f6fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: radial-gradient(circle at top, #e7f0fb, #f7f9fc 60%);
+}
+
+.auth-card {
+  width: min(100%, 420px);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 12px 28px rgba(16, 36, 62, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-card h1 {
+  margin: 0;
+}
+
+.auth-card input,
+.auth-card select,
+.auth-card button {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #c7d4e3;
+}
+
+.auth-card button {
+  border: none;
+  background: #185bb8;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error {
+  color: #b42318;
+  margin: 0;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 1.25rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.topbar button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  background: #185bb8;
+  color: white;
+  cursor: pointer;
+}
