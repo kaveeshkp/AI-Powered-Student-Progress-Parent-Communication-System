@@ -5,7 +5,15 @@ C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\co
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\dto\AuthResponse.java
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\dto\LoginRequest.java
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\dto\RegisterRequest.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\AIInsight.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Announcement.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Attendance.java
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\BaseEntity.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Grade.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Message.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Parent.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Student.java
+C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\Teacher.java
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\entity\User.java
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\enums\AttendanceStatus.java
 C:\Users\kavee\Desktop\Student P\Backend\src\main\java\com\example\studentapp\enums\RoleType.java
