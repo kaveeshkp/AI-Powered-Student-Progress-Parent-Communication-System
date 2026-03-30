@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -36,18 +35,15 @@ public class AIInsight extends BaseEntity {
     private Student student;
 
     @NotBlank
-    @Lob
-    @Column(name = "strengths", nullable = false)
+    @Column(name = "strengths", nullable = false, columnDefinition = "TEXT")
     private String strengths;
 
     @NotBlank
-    @Lob
-    @Column(name = "weaknesses", nullable = false)
+    @Column(name = "weaknesses", nullable = false, columnDefinition = "TEXT")
     private String weaknesses;
 
     @NotBlank
-    @Lob
-    @Column(name = "suggestions", nullable = false)
+    @Column(name = "suggestions", nullable = false, columnDefinition = "TEXT")
     private String suggestions;
 
     @CreationTimestamp

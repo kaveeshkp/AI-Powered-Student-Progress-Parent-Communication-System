@@ -1,5 +1,5 @@
 -- Users
-INSERT INTO users (id, full_name, email, password, role, created_at, updated_at)
+INSERT INTO app_users (id, full_name, email, password, role, created_at, updated_at)
 VALUES
     (1, 'Admin User', 'admin@studentapp.local', '$2a$10$placeholderEncodedAdminPasswordHash', 'ADMIN', NOW(), NOW()),
     (2, 'Nimal Perera', 'teacher@studentapp.local', '$2a$10$placeholderEncodedTeacherPasswordHash', 'TEACHER', NOW(), NOW()),
@@ -20,7 +20,7 @@ VALUES (
     1,
     'ADM-2026-001',
     'Kavindu Fernando',
-    DATE '2011-08-16',
+    '2011-08-16',
     'Grade 8',
     'A',
     NOW(),
@@ -54,9 +54,9 @@ INSERT INTO grades (
     updated_at
 )
 VALUES
-    (1, 1, 'Mathematics', 86.50, 'Term 1', 'Strong concepts, improve speed in word problems.', NOW() - INTERVAL '14 days', NOW(), NOW()),
-    (2, 1, 'Science', 79.00, 'Term 1', 'Good understanding, needs clearer explanations in written answers.', NOW() - INTERVAL '13 days', NOW(), NOW()),
-    (3, 1, 'English', 91.25, 'Term 1', 'Excellent reading comprehension and grammar.', NOW() - INTERVAL '12 days', NOW(), NOW());
+    (1, 1, 'Mathematics', 86.50, 'Term 1', 'Strong concepts, improve speed in word problems.', NOW() - INTERVAL 14 DAY, NOW(), NOW()),
+    (2, 1, 'Science', 79.00, 'Term 1', 'Good understanding, needs clearer explanations in written answers.', NOW() - INTERVAL 13 DAY, NOW(), NOW()),
+    (3, 1, 'English', 91.25, 'Term 1', 'Excellent reading comprehension and grammar.', NOW() - INTERVAL 12 DAY, NOW(), NOW());
 
 -- Attendance (5 records)
 INSERT INTO attendance (
@@ -69,11 +69,11 @@ INSERT INTO attendance (
     updated_at
 )
 VALUES
-    (1, 1, DATE '2026-03-16', 'PRESENT', 'On time.', NOW(), NOW()),
-    (2, 1, DATE '2026-03-17', 'LATE', 'Arrived 10 minutes late.', NOW(), NOW()),
-    (3, 1, DATE '2026-03-18', 'PRESENT', 'Participated actively in class.', NOW(), NOW()),
-    (4, 1, DATE '2026-03-19', 'ABSENT', 'Medical appointment.', NOW(), NOW()),
-    (5, 1, DATE '2026-03-20', 'PRESENT', 'Good attendance recovery after absence.', NOW(), NOW());
+    (1, 1, '2026-03-16', 'PRESENT', 'On time.', NOW(), NOW()),
+    (2, 1, '2026-03-17', 'LATE', 'Arrived 10 minutes late.', NOW(), NOW()),
+    (3, 1, '2026-03-18', 'PRESENT', 'Participated actively in class.', NOW(), NOW()),
+    (4, 1, '2026-03-19', 'ABSENT', 'Medical appointment.', NOW(), NOW()),
+    (5, 1, '2026-03-20', 'PRESENT', 'Good attendance recovery after absence.', NOW(), NOW());
 
 -- Message
 INSERT INTO messages (
@@ -92,7 +92,7 @@ VALUES (
     3,
     'Hello Mrs. Silva, Kavindu has improved in Mathematics this term. Please encourage daily practice for word problems.',
     FALSE,
-    NOW() - INTERVAL '2 days',
+    NOW() - INTERVAL 2 DAY,
     NOW(),
     NOW()
 );
@@ -111,7 +111,7 @@ VALUES (
     'Parent-Teacher Meeting - Term 1',
     'Parent-teacher meetings will be held on April 5th from 8:30 AM to 1:00 PM. Please book your slot through the school office.',
     1,
-    NOW() - INTERVAL '3 days',
+    NOW() - INTERVAL 3 DAY,
     NOW()
 );
 
@@ -132,7 +132,7 @@ VALUES (
     'Strong performance in English and consistent class participation.',
     'Occasional lateness and slower problem-solving pace in Mathematics word problems.',
     'Use a 20-minute daily timed worksheet routine for math word problems and maintain a weekly attendance checklist with parent support.',
-    NOW() - INTERVAL '1 day',
+    NOW() - INTERVAL 1 DAY,
     NOW(),
     NOW()
 );

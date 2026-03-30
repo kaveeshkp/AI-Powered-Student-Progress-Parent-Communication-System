@@ -11,6 +11,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,8 +46,8 @@ public class Grade extends BaseEntity {
     @NotNull
     @DecimalMin(value = "0.0")
     @DecimalMax(value = "100.0")
-    @Column(name = "score", nullable = false)
-    private Double score;
+    @Column(name = "score", nullable = false, precision = 5, scale = 2)
+    private BigDecimal score;
 
     @NotBlank
     @Size(max = 30)
