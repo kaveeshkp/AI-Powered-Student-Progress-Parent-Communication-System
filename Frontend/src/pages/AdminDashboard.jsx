@@ -245,6 +245,10 @@ function BarChart({ data }) {
     return () => clearTimeout(t);
   }, []);
 
+  if (!data?.length) {
+    return <PanelEmptyState title="No usage data yet" detail="Weekly platform usage will appear once telemetry is available." />;
+  }
+
   return (
     <div className="chart-area">
       {data.map((item, index) => (
@@ -306,6 +310,10 @@ function ProgressRing({ accent, value = 82, label = "Operational Score", sub = "
 }
 
 function QuickActions({ items }) {
+  if (!items?.length) {
+    return <PanelEmptyState title="No quick actions" detail="Action shortcuts will appear here once configured." compact />;
+  }
+
   return (
     <div className="quick-grid">
       {items.map((item) => (
@@ -322,6 +330,10 @@ function QuickActions({ items }) {
 }
 
 function UsersTable({ users }) {
+  if (!users?.length) {
+    return <PanelEmptyState title="No users to show" detail="Latest user records will appear once accounts are provisioned." />;
+  }
+
   return (
     <div className="table-wrap">
       <table className="data-table">
@@ -460,6 +472,7 @@ export default function AdminDashboardPage() {
           background: rgba(13,17,32,0.94);
           backdrop-filter: blur(18px);
           border-right: 1px solid var(--border);
+          box-shadow: inset -1px 0 0 rgba(255,255,255,0.02);
           display: flex;
           flex-direction: column;
           transition: width 0.32s var(--ease), transform 0.32s var(--ease);
@@ -637,6 +650,7 @@ export default function AdminDashboardPage() {
           position: sticky;
           top: 0;
           z-index: 40;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         .mobile-menu-btn,
@@ -848,6 +862,60 @@ export default function AdminDashboardPage() {
           animation: fadeUp 0.5s 0.05s var(--ease) forwards;
         }
 
+        .control-hero {
+          border: 1px solid var(--border2);
+          border-radius: 18px;
+          padding: 1.2rem 1.2rem;
+          background:
+            radial-gradient(circle at top right, rgba(245,158,11,0.14), transparent 45%),
+            linear-gradient(135deg, rgba(17,24,41,0.96), rgba(17,24,41,0.82));
+          box-shadow: 0 18px 40px rgba(0,0,0,0.3);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          opacity: 0;
+          transform: translateY(14px);
+          animation: fadeUp 0.5s 0.12s var(--ease) forwards;
+        }
+
+        .control-hero-title {
+          font-family: 'Instrument Serif', serif;
+          font-size: 1.45rem;
+          margin: 0;
+          line-height: 1.1;
+        }
+
+        .control-hero-sub {
+          margin: 0.35rem 0 0;
+          color: var(--muted2);
+          font-size: 0.82rem;
+        }
+
+        .hero-pills {
+          margin-top: 0.75rem;
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        .hero-pill {
+          border-radius: 999px;
+          border: 1px solid var(--border2);
+          background: rgba(255,255,255,0.03);
+          padding: 0.32rem 0.62rem;
+          font-size: 0.72rem;
+          color: var(--muted2);
+          font-weight: 600;
+          letter-spacing: 0.02em;
+        }
+
+        .hero-pill.accent {
+          border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+          color: var(--accent);
+          background: var(--accent-dim);
+        }
+
         @keyframes fadeUp {
           to {
             opacity: 1;
@@ -1030,6 +1098,7 @@ export default function AdminDashboardPage() {
           overflow: hidden;
           opacity: 0;
           transform: translateY(16px);
+          box-shadow: 0 10px 26px rgba(0,0,0,0.24);
         }
 
         .panel.visible {
@@ -1073,6 +1142,32 @@ export default function AdminDashboardPage() {
 
         .panel-action:hover {
           background: var(--accent-dim);
+        }
+
+        .panel-empty {
+          padding: 1.2rem;
+          border: 1px dashed var(--border2);
+          border-radius: 14px;
+          margin: 1rem 1rem 1.1rem;
+          background: rgba(255,255,255,0.02);
+        }
+
+        .panel-empty.compact {
+          margin-top: 0.6rem;
+        }
+
+        .panel-empty-title {
+          margin: 0;
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: var(--text);
+        }
+
+        .panel-empty-detail {
+          margin: 0.3rem 0 0;
+          font-size: 0.78rem;
+          color: var(--muted);
+          line-height: 1.5;
         }
 
         .chart-area {
@@ -1353,6 +1448,11 @@ export default function AdminDashboardPage() {
             align-items: stretch;
           }
 
+          .control-hero {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
           .page-actions {
             justify-content: stretch;
           }
@@ -1592,6 +1692,24 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
+            <section className="control-hero" aria-label="Admin control center summary">
+              <div>
+                <h2 className="control-hero-title">Command center for school operations</h2>
+                <p className="control-hero-sub">
+                  Monitor platform health, user onboarding, and security posture from one admin-first workspace.
+                </p>
+                <div className="hero-pills">
+                  <span className="hero-pill accent">Platform Stable</span>
+                  <span className="hero-pill">Audit-ready logs</span>
+                  <span className="hero-pill">Role-based governance</span>
+                </div>
+              </div>
+              <div className="page-actions">
+                <button type="button" className="ghost-btn">Run Security Check</button>
+                <button type="button" className="primary-btn">Create Admin Task</button>
+              </div>
+            </section>
+
             <div className="stats-grid">
               {cfg.stats.map((stat, index) => (
                 <StatCard
@@ -1606,68 +1724,52 @@ export default function AdminDashboardPage() {
             <div className="dashboard-grid">
               <div className="left-stack">
                 <AnimatedPanel delay={0.28}>
-                  <div className="panel-header">
-                    <div className="panel-title">
-                      <span className="panel-title-dot" />
-                      Weekly Platform Usage
-                    </div>
-                    <button type="button" className="panel-action">
-                      View all
-                    </button>
-                  </div>
+                  <PanelHeader title="Weekly Platform Usage" actionLabel="View all" showDot />
                   <BarChart data={cfg.chartData} />
                 </AnimatedPanel>
 
                 <AnimatedPanel delay={0.36}>
-                  <div className="panel-header">
-                    <div className="panel-title">Recent Activity</div>
-                    <button type="button" className="panel-action">
-                      See more
-                    </button>
-                  </div>
+                  <PanelHeader title="Recent Activity" actionLabel="See more" />
 
-                  <div className="activity-list">
-                    {cfg.activities.map((activity) => {
-                      const style = ACTIVITY_STYLES[activity.type] || ACTIVITY_STYLES.system;
+                  {cfg.activities?.length ? (
+                    <div className="activity-list">
+                      {cfg.activities.map((activity) => {
+                        const style = ACTIVITY_STYLES[activity.type] || ACTIVITY_STYLES.system;
 
-                      return (
-                        <div className="activity-item" key={`${activity.text}-${activity.time}`}>
-                          <div className="activity-dot-wrap" style={{ background: style.bg }}>
-                            <span
-                              className="activity-dot"
-                              style={{
-                                background: style.dot,
-                                boxShadow: `0 0 8px ${style.dot}`,
-                              }}
-                            />
+                        return (
+                          <div className="activity-item" key={`${activity.text}-${activity.time}`}>
+                            <div className="activity-dot-wrap" style={{ background: style.bg }}>
+                              <span
+                                className="activity-dot"
+                                style={{
+                                  background: style.dot,
+                                  boxShadow: `0 0 8px ${style.dot}`,
+                                }}
+                              />
+                            </div>
+
+                            <div>
+                              <div className="activity-text">{activity.text}</div>
+                              <div className="activity-time">{activity.time}</div>
+                            </div>
                           </div>
-
-                          <div>
-                            <div className="activity-text">{activity.text}</div>
-                            <div className="activity-time">{activity.time}</div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <PanelEmptyState title="No recent activity" detail="System events and operational logs will appear here." />
+                  )}
                 </AnimatedPanel>
 
                 <AnimatedPanel delay={0.44}>
-                  <div className="panel-header">
-                    <div className="panel-title">Latest User Overview</div>
-                    <button type="button" className="panel-action">
-                      Manage users
-                    </button>
-                  </div>
+                  <PanelHeader title="Latest User Overview" actionLabel="Manage users" />
                   <UsersTable users={cfg.usersTable} />
                 </AnimatedPanel>
               </div>
 
               <div className="right-stack">
                 <AnimatedPanel delay={0.32}>
-                  <div className="panel-header">
-                    <div className="panel-title">Operational Score</div>
-                  </div>
+                  <PanelHeader title="Operational Score" />
                   <ProgressRing
                     accent={cfg.accent}
                     value={82}
@@ -1677,9 +1779,7 @@ export default function AdminDashboardPage() {
                 </AnimatedPanel>
 
                 <AnimatedPanel delay={0.4}>
-                  <div className="panel-header">
-                    <div className="panel-title">Quick Actions</div>
-                  </div>
+                  <PanelHeader title="Quick Actions" />
                   <QuickActions items={cfg.quickActions} />
                 </AnimatedPanel>
               </div>
@@ -1688,5 +1788,30 @@ export default function AdminDashboardPage() {
         </div>
       </div>
     </>
+  );
+}
+
+function PanelHeader({ title, actionLabel, showDot = false }) {
+  return (
+    <div className="panel-header">
+      <div className="panel-title">
+        {showDot ? <span className="panel-title-dot" /> : null}
+        {title}
+      </div>
+      {actionLabel ? (
+        <button type="button" className="panel-action">
+          {actionLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function PanelEmptyState({ title, detail, compact = false }) {
+  return (
+    <div className={`panel-empty ${compact ? "compact" : ""}`}>
+      <p className="panel-empty-title">{title}</p>
+      <p className="panel-empty-detail">{detail}</p>
+    </div>
   );
 }
