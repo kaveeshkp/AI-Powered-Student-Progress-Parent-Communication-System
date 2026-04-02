@@ -1,356 +1,764 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
 import { useAuth } from "../context/AuthContext";
 import { getStudents } from "../services/studentService";
 import RoleGate from "../routes/RoleGate";
-import { ErrorBanner, SkeletonBlock } from "../components/UiPrimitives";
-import {
-  ActionButton,
-  EmptyStatePanel,
-  InfoNote,
-  MetricCard,
-  PageHero,
-  SectionCard
-} from "../components/DashboardDesignSystem";
 
+/* ─────────────────────────────────────────────────────────────────────────
+   INLINE STYLES  (single <style> block — zero external deps beyond fonts)
+───────────────────────────────────────────────────────────────────────── */
+const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,600;9..144,0,700;9..144,1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #040810;
+  --surface:     #080e1a;
+  --surface2:    #0d1526;
+  --border:      rgba(255,255,255,0.07);
+  --border2:     rgba(34,211,238,0.18);
+  --text:        #dde4f0;
+  --muted:       #5a6480;
+  --muted2:      #8892aa;
+  --cyan:        #22d3ee;
+  --cyan-dim:    rgba(34,211,238,0.1);
+  --cyan-glow:   rgba(34,211,238,0.22);
+  --emerald:     #34d399;
+  --amber:       #fbbf24;
+  --red:         #f87171;
+  --ease:        cubic-bezier(0.16,1,0.3,1);
+  --sidebar-w:   248px;
+  --topbar-h:    64px;
+}
+
+/* ── Layout shell ── */
+.td-root { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; color: var(--text); display: flex; overflow: hidden; }
+
+/* ── Sidebar ── */
+.td-sidebar {
+  width: var(--sidebar-w); min-height: 100vh; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: relative; z-index: 40;
+  transition: width 0.35s var(--ease);
+  overflow: hidden;
+}
+.td-sidebar.collapsed { width: 68px; }
+
+.sb-logo {
+  height: var(--topbar-h); display: flex; align-items: center; gap: 0.75rem;
+  padding: 0 1.1rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.sb-logo-icon {
+  width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px;
+  background: linear-gradient(135deg, var(--cyan), #0891b2);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 0 18px var(--cyan-glow);
+}
+.sb-logo-icon svg { width: 18px; height: 18px; }
+.sb-logo-text {
+  font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; color: #fff;
+  white-space: nowrap; transition: opacity 0.2s;
+}
+.td-sidebar.collapsed .sb-logo-text { opacity: 0; pointer-events: none; }
+
+.sb-section-label {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); padding: 1.5rem 1.1rem 0.5rem; white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.td-sidebar.collapsed .sb-section-label { opacity: 0; }
+
+.sb-nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.6rem 1.1rem; margin: 0.1rem 0.5rem;
+  border-radius: 10px; cursor: pointer;
+  font-size: 0.845rem; font-weight: 500; color: var(--muted2);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  white-space: nowrap; overflow: hidden; position: relative;
+  text-decoration: none;
+}
+.sb-nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.sb-nav-item.active {
+  background: var(--cyan-dim); color: var(--cyan);
+  box-shadow: inset 3px 0 0 var(--cyan);
+}
+.sb-nav-item.active::after {
+  content: ''; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
+}
+.td-sidebar.collapsed .sb-nav-item.active::after { opacity: 0; }
+.sb-nav-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.sb-nav-label { transition: opacity 0.2s; }
+.td-sidebar.collapsed .sb-nav-label { opacity: 0; }
+
+.sb-footer { margin-top: auto; padding: 1rem 0.5rem; border-top: 1px solid var(--border); }
+.sb-collapse-btn {
+  width: 100%; display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.6rem 0.6rem; border-radius: 8px; border: none;
+  background: transparent; color: var(--muted); cursor: pointer; font-size: 0.78rem;
+  font-family: 'DM Sans', sans-serif; transition: background 0.2s, color 0.2s;
+}
+.sb-collapse-btn:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.sb-collapse-btn svg { flex-shrink: 0; transition: transform 0.35s var(--ease); }
+.td-sidebar.collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
+
+/* ── Main ── */
+.td-main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── Topbar ── */
+.td-topbar {
+  height: var(--topbar-h); background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.75rem; gap: 1rem;
+  flex-shrink: 0; position: sticky; top: 0; z-index: 30;
+}
+.tb-search {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 0.4rem 0.75rem; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tb-search:focus-within { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
+.tb-search input { background: none; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; width: 150px; }
+.tb-search input::placeholder { color: var(--muted); }
+.tb-actions { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; }
+.tb-icon-btn {
+  width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--muted2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; position: relative;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.tb-icon-btn:hover { background: var(--cyan-dim); color: var(--cyan); border-color: var(--cyan); }
+.tb-icon-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); border: 1.5px solid var(--surface); box-shadow: 0 0 6px var(--red); }
+.tb-avatar {
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  background: linear-gradient(135deg, var(--cyan), #0891b2);
+  border: 2px solid var(--cyan-dim); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em;
+  transition: box-shadow 0.2s;
+}
+.tb-avatar:hover { box-shadow: 0 0 0 3px var(--cyan-dim), 0 0 14px var(--cyan-glow); }
+
+/* ── Content ── */
+.td-content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 2rem 1.75rem; display: flex; flex-direction: column; gap: 1.75rem;
+}
+.td-content::-webkit-scrollbar { width: 4px; }
+.td-content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* ── Fade-up animation ── */
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.anim { opacity: 0; transform: translateY(20px); animation: fadeUp 0.55s var(--ease) forwards; }
+
+/* ── Hero banner ── */
+.hero-banner {
+  border-radius: 20px; overflow: hidden; position: relative;
+  background: linear-gradient(135deg, rgba(34,211,238,0.07) 0%, rgba(8,145,178,0.04) 50%, rgba(52,211,153,0.04) 100%);
+  border: 1px solid var(--border2);
+  padding: 2rem 2.25rem;
+}
+.hero-banner::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+.hero-banner::after {
+  content: ''; position: absolute; top: -60px; right: -40px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,211,238,0.1), transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--cyan);
+  background: var(--cyan-dim); border: 1px solid rgba(34,211,238,0.22);
+  border-radius: 100px; padding: 0.22rem 0.75rem;
+  margin-bottom: 0.9rem;
+}
+.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation: heroPulse 2s ease-in-out infinite; }
+@keyframes heroPulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.3); } }
+.hero-title {
+  font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 600; color: #fff; line-height: 1.1; letter-spacing: -0.025em;
+  max-width: 560px;
+}
+.hero-title em { font-style: italic; color: var(--cyan); }
+.hero-desc { margin-top: 0.6rem; font-size: 0.875rem; color: var(--muted2); max-width: 500px; line-height: 1.65; }
+.hero-actions { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.65rem; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  background: var(--cyan); color: #040810;
+  padding: 0.6rem 1.3rem; border-radius: 10px;
+  font-weight: 700; font-size: 0.82rem; text-decoration: none;
+  box-shadow: 0 6px 20px var(--cyan-glow);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  position: relative; overflow: hidden;
+}
+.btn-primary::before { content: ''; position: absolute; top:0; left:-75%; width:50%; height:100%; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent); transform:skewX(-15deg); }
+.btn-primary:hover::before { animation: shimmer 0.55s ease forwards; }
+@keyframes shimmer { to { left:150%; } }
+.btn-primary:hover { background: #67e8f9; transform: translateY(-1px); box-shadow: 0 10px 28px var(--cyan-glow); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  background: var(--cyan-dim); border: 1px solid rgba(34,211,238,0.3);
+  color: var(--cyan); padding: 0.6rem 1.3rem; border-radius: 10px;
+  font-weight: 600; font-size: 0.82rem; text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.btn-ghost:hover { background: rgba(34,211,238,0.18); border-color: var(--cyan); transform: translateY(-1px); }
+
+/* ── Metric cards ── */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.metric-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 1.25rem 1.35rem; position: relative; overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  cursor: default;
+}
+.metric-card:hover { border-color: var(--mc-color); box-shadow: 0 0 28px color-mix(in srgb, var(--mc-color) 18%, transparent), 0 8px 24px rgba(0,0,0,0.3); transform: translateY(-2px); }
+.metric-card::before { content: ''; position: absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, var(--mc-color), transparent); opacity:0; transition: opacity 0.3s; }
+.metric-card:hover::before { opacity: 1; }
+.mc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.85rem; }
+.mc-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.mc-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: color-mix(in srgb, var(--mc-color) 12%, transparent); border: 1px solid color-mix(in srgb, var(--mc-color) 22%, transparent); }
+.mc-value { font-family: 'Fraunces', serif; font-size: 2.1rem; font-weight: 600; color: #fff; line-height: 1; }
+.mc-helper { margin-top: 0.35rem; font-size: 0.72rem; color: var(--muted); }
+.mc-shimmer { height: 2.1rem; background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.08), rgba(255,255,255,0.05)); background-size: 200% 100%; border-radius: 8px; animation: skeleton 1.4s ease-in-out infinite; }
+@keyframes skeleton { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+/* ── Two-col layout ── */
+.two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.25rem; align-items: start; }
+@media (max-width: 960px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── Section card ── */
+.sc {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden;
+}
+.sc-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+.sc-eyebrow { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.3rem; }
+.sc-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation: heroPulse 2.5s ease-in-out infinite; }
+.sc-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; color: #fff; }
+.sc-desc { font-size: 0.78rem; color: var(--muted2); margin-top: 0.2rem; line-height: 1.5; }
+.sc-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.55rem; border-radius: 100px; background: rgba(34,211,238,0.12); color: var(--cyan); border: 1px solid rgba(34,211,238,0.25); margin-top: 0.5rem; }
+.sc-body { padding: 1.25rem 1.5rem; }
+
+/* ── Student roster ── */
+.roster-list { margin-top: 0.75rem; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+.roster-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.roster-item:last-child { border-bottom: none; }
+.roster-item:hover { background: rgba(34,211,238,0.03); }
+.roster-avatar {
+  width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(8,145,178,0.15));
+  border: 1px solid rgba(34,211,238,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; color: var(--cyan);
+}
+.roster-info { flex: 1; min-width: 0; }
+.roster-name { font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.roster-meta { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.roster-pills { display: flex; gap: 0.4rem; flex-shrink: 0; }
+.pill {
+  font-size: 0.68rem; font-weight: 600; padding: 0.18rem 0.5rem;
+  border-radius: 100px;
+}
+.pill-grade { background: rgba(52,211,153,0.1); color: var(--emerald); border: 1px solid rgba(52,211,153,0.2); }
+.pill-att   { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.roster-view-btn {
+  font-size: 0.72rem; font-weight: 600; color: var(--cyan);
+  background: var(--cyan-dim); border: 1px solid rgba(34,211,238,0.22);
+  border-radius: 8px; padding: 0.3rem 0.7rem; text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.roster-view-btn:hover { background: rgba(34,211,238,0.18); border-color: var(--cyan); }
+
+/* ── Skeleton rows ── */
+.skel-row { height: 58px; border-radius: 12px; background: var(--surface2); animation: skeleton 1.4s ease-in-out infinite; margin-bottom: 0.5rem; }
+
+/* ── Error banner ── */
+.error-banner {
+  border-radius: 12px; border: 1px solid rgba(248,113,113,0.25);
+  background: rgba(248,113,113,0.07);
+  padding: 0.85rem 1.1rem; font-size: 0.82rem; color: var(--red);
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.retry-btn {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 0.75rem; font-weight: 600; color: var(--cyan);
+  background: var(--cyan-dim); border: 1px solid rgba(34,211,238,0.25);
+  border-radius: 8px; padding: 0.3rem 0.75rem; cursor: pointer;
+  transition: background 0.2s;
+}
+.retry-btn:hover { background: rgba(34,211,238,0.18); }
+
+/* ── Empty state ── */
+.empty-state { padding: 2.5rem 1.5rem; text-align: center; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.5; }
+.empty-title { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--text); }
+.empty-sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.55; }
+
+/* ── Quick actions ── */
+.action-btn {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.85rem 1rem; border-radius: 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  text-decoration: none; color: var(--text);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.action-btn:hover { background: var(--cyan-dim); border-color: rgba(34,211,238,0.3); transform: translateY(-1px); }
+.action-icon { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--cyan-dim); border: 1px solid rgba(34,211,238,0.2); font-size: 1.1rem; }
+.action-title { font-size: 0.83rem; font-weight: 600; color: #fff; }
+.action-sub { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+.action-arrow { margin-left: auto; color: var(--muted); font-size: 0.9rem; transition: transform 0.2s; }
+.action-btn:hover .action-arrow { transform: translateX(3px); color: var(--cyan); }
+
+/* ── Focus tips ── */
+.focus-tip {
+  display: flex; gap: 0.75rem; padding: 0.9rem 1rem;
+  border-radius: 12px; background: var(--surface2); border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+.focus-tip:hover { border-color: rgba(34,211,238,0.2); }
+.focus-tip-num { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; background: var(--cyan-dim); border: 1px solid rgba(34,211,238,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: var(--cyan); margin-top: 1px; }
+.focus-tip-title { font-size: 0.8rem; font-weight: 600; color: #fff; }
+.focus-tip-text { font-size: 0.72rem; color: var(--muted); margin-top: 2px; line-height: 1.45; }
+
+/* ── Bottom stat row ── */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1rem; }
+.stat-tile { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; transition: border-color 0.2s; }
+.stat-tile:hover { border-color: rgba(34,211,238,0.2); }
+.stat-tile-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.stat-tile-value { font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 600; color: #fff; margin-top: 0.3rem; }
+
+/* ── Pattern cards ── */
+.pattern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 1rem; }
+.pattern-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; transition: border-color 0.2s, transform 0.2s; }
+.pattern-card:hover { border-color: rgba(34,211,238,0.2); transform: translateY(-2px); }
+.pc-eyebrow { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); margin-bottom: 0.4rem; }
+.pc-title { font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; }
+.pc-items { display: flex; flex-direction: column; gap: 0.35rem; }
+.pc-item { font-size: 0.74rem; color: var(--muted2); display: flex; gap: 0.4rem; }
+.pc-item::before { content: '—'; color: var(--muted); flex-shrink: 0; }
+
+/* ── Info note ── */
+.info-note { font-size: 0.72rem; color: var(--muted); padding: 0.6rem 0.85rem; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); margin-top: 0.75rem; }
+
+/* ── Dropdown ── */
+.dropdown { position: absolute; top: calc(100% + 10px); right: 0; background: var(--surface2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.5rem; min-width: 170px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); z-index: 100; animation: dropIn 0.25s var(--ease); }
+@keyframes dropIn { from { opacity:0; transform:translateY(-8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+.dd-item { display: flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.7rem; border-radius: 9px; cursor: pointer; font-size: 0.8rem; color: var(--muted2); transition: background 0.15s, color 0.15s; text-decoration: none; }
+.dd-item:hover { background: var(--cyan-dim); color: var(--cyan); }
+.dd-item.danger:hover { background: rgba(248,113,113,0.1); color: var(--red); }
+.dd-divider { height: 1px; background: var(--border); margin: 0.3rem 0; }
+`;
+
+/* ─── NAV ITEMS ───────────────────────────────────────────────────────── */
+const NAV = [
+  { label: "Overview",    icon: "⊞", to: "/teacher" },
+  { label: "Students",    icon: "👥", to: "/teacher/students" },
+  { label: "Assignments", icon: "📋", to: "/teacher/assignments" },
+  { label: "Grades",      icon: "📊", to: "/teacher/grades" },
+  { label: "Attendance",  icon: "✅", to: "/teacher/attendance" },
+  { label: "Messages",    icon: "💬", to: "/messages" },
+  { label: "AI Insights", icon: "🤖", to: "/ai-insights" },
+  { label: "Schedule",    icon: "🗓️", to: "/teacher/schedule" },
+];
+
+/* ─── UTILS ───────────────────────────────────────────────────────────── */
+const initials = (str = "") =>
+  str.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "T";
+
+const greeting = () => {
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+};
+
+/* ─── SUB-COMPONENTS ──────────────────────────────────────────────────── */
+
+function MetricCard({ label, value, helper, icon, color, loading, delay }) {
+  return (
+    <div className="metric-card anim" style={{ "--mc-color": color, animationDelay: delay }}>
+      <div className="mc-top">
+        <div className="mc-label">{label}</div>
+        <div className="mc-icon">{icon}</div>
+      </div>
+      {loading ? (
+        <div className="mc-shimmer" style={{ width: "60%" }} />
+      ) : (
+        <div className="mc-value">{value}</div>
+      )}
+      <div className="mc-helper">{helper}</div>
+    </div>
+  );
+}
+
+function SectionCard({ eyebrow, title, desc, badge, children, delay = "0s" }) {
+  return (
+    <div className="sc anim" style={{ animationDelay: delay }}>
+      <div className="sc-header">
+        <div className="sc-eyebrow"><span className="sc-eyebrow-dot" />{eyebrow}</div>
+        <div className="sc-title">{title}</div>
+        {desc && <div className="sc-desc">{desc}</div>}
+        {badge && <div className="sc-badge">{badge}</div>}
+      </div>
+      <div className="sc-body">{children}</div>
+    </div>
+  );
+}
+
+function FocusTip({ num, title, text }) {
+  return (
+    <div className="focus-tip">
+      <div className="focus-tip-num">{num}</div>
+      <div>
+        <div className="focus-tip-title">{title}</div>
+        <div className="focus-tip-text">{text}</div>
+      </div>
+    </div>
+  );
+}
+
+function PatternCard({ eyebrow, title, items }) {
+  return (
+    <div className="pattern-card">
+      <div className="pc-eyebrow">{eyebrow}</div>
+      <div className="pc-title">{title}</div>
+      <div className="pc-items">
+        {items.map((t) => <div className="pc-item" key={t}>{t}</div>)}
+      </div>
+    </div>
+  );
+}
+
+/* ─── MAIN COMPONENT ──────────────────────────────────────────────────── */
 function TeacherDashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [summary, setSummary] = useState({
-    totalStudents: 0,
-    averageGrade: "—",
-    averageAttendance: "—",
-  });
+  const [students, setStudents]   = useState([]);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState("");
+  const [summary, setSummary]     = useState({ totalStudents: 0, averageGrade: "—", averageAttendance: "—" });
+  const [collapsed, setCollapsed] = useState(false);
+  const [activeNav, setActiveNav] = useState(0);
+  const [profileOpen, setProfileOpen] = useState(false);
 
-  const loadStudents = async (isMountedRef) => {
-    setLoading(true);
-    setError("");
-
+  const loadStudents = async (mountRef) => {
+    setLoading(true); setError("");
     try {
       const data = await getStudents();
-      if (isMountedRef && !isMountedRef.current) return;
-
-      const list = Array.isArray(data?.students)
-        ? data.students
-        : Array.isArray(data)
-          ? data
-          : [];
+      if (mountRef && !mountRef.current) return;
+      const list = Array.isArray(data?.students) ? data.students : Array.isArray(data) ? data : [];
       const s = data?.summary || {};
-
       setStudents(list);
-      setSummary({
-        totalStudents: s.totalStudents ?? list.length,
-        averageGrade: s.averageGrade ?? "—",
-        averageAttendance: s.averageAttendance ?? "—",
-      });
+      setSummary({ totalStudents: s.totalStudents ?? list.length, averageGrade: s.averageGrade ?? "—", averageAttendance: s.averageAttendance ?? "—" });
     } catch (err) {
-      if (isMountedRef && !isMountedRef.current) return;
+      if (mountRef && !mountRef.current) return;
       setStudents([]);
       setSummary({ totalStudents: 0, averageGrade: "—", averageAttendance: "—" });
       setError(err?.message || "Failed to load students.");
     } finally {
-      if (!isMountedRef || isMountedRef.current) setLoading(false);
+      if (!mountRef || mountRef.current) setLoading(false);
     }
   };
 
   useEffect(() => {
     const ref = { current: true };
     loadStudents(ref);
-
-    return () => {
-      ref.current = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => { ref.current = false; };
   }, []);
 
-  const studentRows = useMemo(
-    () =>
-      students.map((s, idx) => ({
-        id: s.id ?? idx,
-        name: s.fullName || s.name || "Unnamed",
-        grade: s.grade || s.latestGrade || "—",
-        attendance: s.attendance || s.attendanceRate || "—",
-      })),
-    [students]
-  );
-
-  const greeting = useMemo(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
-    return "Good evening";
-  }, []);
+  const studentRows = useMemo(() =>
+    students.map((s, i) => ({
+      id: s.id ?? i,
+      name: s.fullName || s.name || "Unnamed",
+      grade: s.grade || s.latestGrade || "—",
+      attendance: s.attendance || s.attendanceRate || "—",
+    })), [students]);
 
   const topStudents = useMemo(() => studentRows.slice(0, 6), [studentRows]);
   const isEmpty = !loading && studentRows.length === 0;
-
-  const retryButton = (
-    <button
-      type="button"
-      onClick={() => loadStudents()}
-      className="rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-500/20"
-    >
-      Retry Load
-    </button>
-  );
+  const hi = initials(user?.fullName || user?.email);
 
   return (
-    <DashboardLayout title="Teacher Dashboard">
-      <div className="space-y-6">
-        <PageHero
-          eyebrow="Teacher Portal"
-          title={`${greeting}, ${user?.fullName || user?.email || "Teacher"}`}
-          description="Monitor class performance, attendance trends, and parent communication from a focused, premium teaching workspace."
-          accent="cyan"
-          action={
-            <div className="flex flex-wrap gap-2">
-              <RoleGate allowedRoles={["TEACHER"]}>
-                <Link
-                  to="/messages"
-                  className="inline-flex items-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-500/20"
-                >
-                  Open Messages
-                </Link>
-              </RoleGate>
+    <>
+      <style>{CSS}</style>
+      <div className="td-root" onClick={() => setProfileOpen(false)}>
 
-              <RoleGate allowedRoles={["TEACHER"]}>
-                <Link
-                  to="/ai-insights"
-                  className="inline-flex items-center rounded-xl bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-400"
-                >
-                  View AI Insights
-                </Link>
-              </RoleGate>
+        {/* ── SIDEBAR ── */}
+        <aside className={`td-sidebar ${collapsed ? "collapsed" : ""}`}>
+          <div className="sb-logo">
+            <div className="sb-logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
             </div>
-          }
-        />
+            <span className="sb-logo-text">EduPortal</span>
+          </div>
 
-        <ErrorBanner message={error} />
+          <span className="sb-section-label">Navigation</span>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <MetricCard
-            label="Total Students"
-            value={summary.totalStudents}
-            helper="Current class roster"
-            tone="cyan"
-            loading={loading}
-          />
-          <MetricCard
-            label="Average Grade"
-            value={summary.averageGrade}
-            helper="Latest academic snapshot"
-            tone="emerald"
-            loading={loading}
-          />
-          <MetricCard
-            label="Attendance"
-            value={summary.averageAttendance}
-            helper="Overall class presence"
-            tone="amber"
-            loading={loading}
-          />
-        </section>
+          {NAV.map((item, i) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className={`sb-nav-item ${activeNav === i ? "active" : ""}`}
+              onClick={() => setActiveNav(i)}
+            >
+              <span className="sb-nav-icon">{item.icon}</span>
+              <span className="sb-nav-label">{item.label}</span>
+            </Link>
+          ))}
 
-        <section className="grid gap-4 xl:grid-cols-[1.6fr_0.9fr]">
-          <SectionCard
-            eyebrow="Roster"
-            title="Students Snapshot"
-            description="Review your latest roster and jump into student detail pages."
-            badge={error ? "Data Issue" : "Live"}
-            accent="cyan"
-          >
-            {loading ? (
-              <div className="mt-4 space-y-3">
-                <SkeletonBlock className="h-14 rounded-xl" />
-                <SkeletonBlock className="h-14 rounded-xl" />
-                <SkeletonBlock className="h-14 rounded-xl" />
-              </div>
-            ) : isEmpty ? (
-              <EmptyStatePanel
-                title={error ? "Unable to load roster" : "No students available"}
-                detail={
-                  error
-                    ? "The students service is temporarily unavailable. Retry when backend/API is reachable."
-                    : "No student records were returned for your account yet."
-                }
-                action={retryButton}
-                accent="cyan"
-              />
-            ) : (
-              <div className="mt-4 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/40">
-                <ul className="divide-y divide-slate-800">
-                  {topStudents.map((student) => (
-                    <li
-                      key={student.id}
-                      className="flex items-center justify-between gap-4 px-4 py-4 text-sm text-slate-200 transition hover:bg-slate-800/40"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold text-white">
-                          {student.name}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">
-                          Grade {student.grade} · Attendance {student.attendance}
-                        </p>
+          <div className="sb-footer">
+            <button className="sb-collapse-btn" onClick={() => setCollapsed((p) => !p)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+              <span className="sb-nav-label" style={{ fontSize: "0.78rem" }}>Collapse</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* ── MAIN ── */}
+        <div className="td-main">
+
+          {/* Topbar */}
+          <header className="td-topbar">
+            <div className="tb-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted)", flexShrink: 0 }}>
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+              <input placeholder="Search students…" />
+            </div>
+
+            <div className="tb-actions">
+              {/* Notifications */}
+              <button className="tb-icon-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span className="dot" />
+              </button>
+
+              {/* Profile */}
+              <div style={{ position: "relative" }}>
+                <button
+                  className="tb-avatar"
+                  onClick={(e) => { e.stopPropagation(); setProfileOpen((p) => !p); }}
+                >
+                  {hi}
+                </button>
+                {profileOpen && (
+                  <div className="dropdown" onClick={(e) => e.stopPropagation()}>
+                    <div style={{ padding: "0.6rem 0.75rem 0.45rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                      <div className="tb-avatar" style={{ pointerEvents: "none", width: 30, height: 30, fontSize: "0.62rem" }}>{hi}</div>
+                      <div>
+                        <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#fff" }}>{user?.fullName || "Teacher"}</div>
+                        <div style={{ fontSize: "0.69rem", color: "var(--muted)" }}>TEACHER</div>
                       </div>
+                    </div>
+                    <div className="dd-divider" />
+                    <a href="#" className="dd-item">⚙️ &nbsp;Settings</a>
+                    <a href="#" className="dd-item">👤 &nbsp;Profile</a>
+                    <div className="dd-divider" />
+                    <div className="dd-item danger" onClick={logout}>🚪 &nbsp;Sign out</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </header>
 
-                      <Link
-                        to={`/teacher/students/${student.id}`}
-                        className="shrink-0 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-200 transition hover:bg-cyan-500/20"
-                      >
-                        View Details
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+          {/* Scrollable content */}
+          <div className="td-content">
+
+            {/* ── Hero ── */}
+            <div className="hero-banner anim" style={{ animationDelay: "0.05s" }}>
+              <div className="hero-eyebrow"><span className="hero-dot" />Teacher Portal</div>
+              <h1 className="hero-title">
+                {greeting()},&nbsp;
+                <em>{user?.fullName?.split(" ")[0] || user?.email || "Teacher"}</em>
+              </h1>
+              <p className="hero-desc">
+                Monitor class performance, attendance trends, and parent communication from your focused teaching workspace.
+              </p>
+              <div className="hero-actions">
+                <RoleGate allowedRoles={["TEACHER"]}>
+                  <Link to="/ai-insights" className="btn-primary">
+                    View AI Insights
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </Link>
+                </RoleGate>
+                <RoleGate allowedRoles={["TEACHER"]}>
+                  <Link to="/messages" className="btn-ghost">Open Messages</Link>
+                </RoleGate>
+              </div>
+            </div>
+
+            {/* ── Error ── */}
+            {error && (
+              <div className="error-banner anim" style={{ animationDelay: "0.1s" }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                {error}
+                <button className="retry-btn" onClick={() => loadStudents()}>Retry</button>
               </div>
             )}
 
-            {!loading && studentRows.length > topStudents.length ? (
-              <InfoNote className="mt-4">
-                Showing {topStudents.length} of {studentRows.length} students. Open a student record for full details.
-              </InfoNote>
-            ) : null}
-          </SectionCard>
+            {/* ── Metrics ── */}
+            <div className="metrics-grid">
+              <MetricCard label="Total Students" value={summary.totalStudents} helper="Current class roster" icon="👥" color="var(--cyan)"    loading={loading} delay="0.15s" />
+              <MetricCard label="Average Grade"  value={summary.averageGrade}  helper="Latest academic snapshot" icon="📊" color="var(--emerald)" loading={loading} delay="0.22s" />
+              <MetricCard label="Attendance"     value={summary.averageAttendance} helper="Overall class presence" icon="✅" color="var(--amber)"   loading={loading} delay="0.29s" />
+            </div>
 
-          <div className="space-y-4">
-            <SectionCard
-              eyebrow="Actions"
-              title="Quick Actions"
-              description="Move into the workflows you use most often."
-              accent="cyan"
-            >
-              <div className="mt-4 grid gap-3">
-                <ActionButton
-                  to="/messages"
-                  title="Open Messages"
-                  subtitle="Reply to parents and students"
-                  tone="cyan"
+            {/* ── Two-col ── */}
+            <div className="two-col">
+              {/* Students roster */}
+              <SectionCard
+                eyebrow="Roster"
+                title="Students Snapshot"
+                desc="Review your latest roster and jump into student detail pages."
+                badge={error ? "Data Issue" : "Live"}
+                delay="0.35s"
+              >
+                {loading ? (
+                  <div style={{ marginTop: "0.75rem" }}>
+                    {[1,2,3].map((i) => <div key={i} className="skel-row" />)}
+                  </div>
+                ) : isEmpty ? (
+                  <div className="empty-state">
+                    <div className="empty-icon">🎒</div>
+                    <div className="empty-title">{error ? "Unable to load roster" : "No students yet"}</div>
+                    <div className="empty-sub">{error ? "The students service is temporarily unavailable." : "No student records were returned for your account."}</div>
+                    {error && (
+                      <button onClick={() => loadStudents()} style={{ marginTop: "1rem", padding: "0.45rem 1rem", borderRadius: 9, background: "var(--cyan-dim)", border: "1px solid rgba(34,211,238,0.25)", color: "var(--cyan)", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}>
+                        Retry Load
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div className="roster-list">
+                      {topStudents.map((s) => (
+                        <div className="roster-item" key={s.id}>
+                          <div className="roster-avatar">{initials(s.name)}</div>
+                          <div className="roster-info">
+                            <div className="roster-name">{s.name}</div>
+                            <div className="roster-meta">Grade {s.grade} · Attendance {s.attendance}</div>
+                          </div>
+                          <div className="roster-pills">
+                            <span className="pill pill-grade">{s.grade}</span>
+                            <span className="pill pill-att">{s.attendance}</span>
+                          </div>
+                          <Link to={`/teacher/students/${s.id}`} className="roster-view-btn">View →</Link>
+                        </div>
+                      ))}
+                    </div>
+                    {studentRows.length > topStudents.length && (
+                      <div className="info-note">
+                        Showing {topStudents.length} of {studentRows.length} students.
+                      </div>
+                    )}
+                  </>
+                )}
+              </SectionCard>
+
+              {/* Right column */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                {/* Quick actions */}
+                <SectionCard eyebrow="Actions" title="Quick Actions" desc="Jump into your most-used workflows." delay="0.4s">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+                    {[
+                      { to: "/messages",    icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
+                      { to: "/ai-insights", icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
+                      { to: "/teacher/grades",      icon: "📊", title: "Grade Book",      sub: "Enter and manage marks" },
+                      { to: "/teacher/attendance",  icon: "✅", title: "Attendance",      sub: "Mark and review presence" },
+                    ].map((a) => (
+                      <Link key={a.to} to={a.to} className="action-btn">
+                        <div className="action-icon">{a.icon}</div>
+                        <div>
+                          <div className="action-title">{a.title}</div>
+                          <div className="action-sub">{a.sub}</div>
+                        </div>
+                        <span className="action-arrow">→</span>
+                      </Link>
+                    ))}
+                  </div>
+                </SectionCard>
+
+                {/* Focus tips */}
+                <SectionCard eyebrow="Focus" title="Today's Priorities" desc="Keep daily tasks visible and actionable." delay="0.45s">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+                    <FocusTip num="1" title="Attendance Follow-up" text="Review late and absent students first." />
+                    <FocusTip num="2" title="Parent Communication" text="Send updates for at-risk students." />
+                    <FocusTip num="3" title="Assessment Review" text="Track trends before the next class." />
+                  </div>
+                </SectionCard>
+              </div>
+            </div>
+
+            {/* ── Pattern cards ── */}
+            <SectionCard eyebrow="Workspace" title="Dashboard Modules" desc="Reusable content patterns for each teaching area." delay="0.5s">
+              <div className="pattern-grid" style={{ marginTop: "0.75rem" }}>
+                <PatternCard
+                  eyebrow="Attendance"
+                  title="Attendance Pattern"
+                  items={["Present, absent, and late counts", "Attendance rate by class", "Filterable by date range"]}
                 />
-                <ActionButton
-                  to="/ai-insights"
-                  title="AI Insights"
-                  subtitle="Review performance suggestions"
-                  tone="cyan-outline"
+                <PatternCard
+                  eyebrow="Grades"
+                  title="Grades Pattern"
+                  items={["Average grade, top performers", "Pending grading queue", "Subject drill-down view"]}
+                />
+                <PatternCard
+                  eyebrow="Messages"
+                  title="Messages Pattern"
+                  items={["Unread & flagged threads", "Quick-reply shortcuts", "Parent contact directory"]}
                 />
               </div>
-
-              <InfoNote className="mt-5">
-                Data shown here comes from your students API and summary service.
-              </InfoNote>
             </SectionCard>
 
+            {/* ── Stat row ── */}
             <SectionCard
-              eyebrow="Focus"
-              title="Teaching Focus"
-              description="Keep daily priorities visible and actionable."
-              accent="cyan"
+              eyebrow="Workspace"
+              title="Teacher Workspace"
+              desc={`Welcome, ${user?.fullName || user?.email}. Review classes, monitor attendance, and share updates with parents.`}
+              delay="0.55s"
             >
-              <div className="mt-4 space-y-2">
-                <MiniInfoCard title="Attendance Follow-up" text="Review late and absent students first." />
-                <MiniInfoCard title="Parent Communication" text="Send updates for at-risk students." />
-                <MiniInfoCard title="Assessment Review" text="Track trends before the next class." />
+              <div className="stat-row" style={{ marginTop: "0.75rem" }}>
+                <div className="stat-tile">
+                  <div className="stat-tile-label">Students Loaded</div>
+                  <div className="stat-tile-value">{studentRows.length}</div>
+                </div>
+                <div className="stat-tile">
+                  <div className="stat-tile-label">Average Grade</div>
+                  <div className="stat-tile-value">{summary.averageGrade}</div>
+                </div>
+                <div className="stat-tile">
+                  <div className="stat-tile-label">Avg Attendance</div>
+                  <div className="stat-tile-value">{summary.averageAttendance}</div>
+                </div>
               </div>
             </SectionCard>
-          </div>
-        </section>
 
-        <section className="grid gap-4 lg:grid-cols-3">
-          <SectionCard
-            eyebrow="Attendance"
-            title="Attendance Pattern"
-            description="Reusable structure for attendance pages."
-            accent="cyan"
-          >
-            <div className="mt-4 space-y-3">
-              <MiniInfoCard
-                title="Top Summary"
-                text="Present, absent, late, and attendance rate."
-              />
-              <MiniInfoCard
-                title="Main Content"
-                text="Attendance table with filters, dates, and student status."
-              />
-            </div>
-          </SectionCard>
-
-          <SectionCard
-            eyebrow="Grades"
-            title="Grades Pattern"
-            description="Same shell, grade-focused content modules."
-            accent="cyan"
-          >
-            <div className="mt-4 space-y-3">
-              <MiniInfoCard
-                title="Top Summary"
-                text="Average grade, top performers, and pending grading."
-              />
-              <MiniInfoCard
-                title="Main Content"
-                text="Assessment list, grade table, and subject drill-down."
-              />
-            </div>
-          </SectionCard>
-
-          <SectionCard
-            eyebrow="Messages"
-            title="Messages Pattern"
-            description="Communication-ready layout with clear hierarchy."
-            accent="cyan"
-          >
-            <div className="mt-4 space-y-3">
-              <MiniInfoCard
-                title="Top Summary"
-                text="Unread messages, flagged threads, and sent count."
-              />
-              <MiniInfoCard
-                title="Main Content"
-                text="Conversation list, quick replies, and contact shortcuts."
-              />
-            </div>
-          </SectionCard>
-        </section>
-
-        <SectionCard
-          eyebrow="Workspace"
-          title="Teacher Workspace"
-          description={`Welcome, ${user?.fullName || user?.email}. Review classes, monitor attendance, and share updates with parents.`}
-          accent="cyan"
-        >
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <HighlightStat label="Students Loaded" value={studentRows.length} />
-            <HighlightStat label="Average Grade" value={summary.averageGrade} />
-            <HighlightStat
-              label="Average Attendance"
-              value={summary.averageAttendance}
-            />
-          </div>
-        </SectionCard>
+          </div>{/* /content */}
+        </div>{/* /main */}
       </div>
-    </DashboardLayout>
-  );
-}
-
-function MiniInfoCard({ title, text }) {
-  return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
-      <h3 className="text-sm font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
-    </div>
-  );
-}
-
-function HighlightStat({ label, value }) {
-  return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
-      <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-        {label}
-      </p>
-      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
-    </div>
+    </>
   );
 }
 
