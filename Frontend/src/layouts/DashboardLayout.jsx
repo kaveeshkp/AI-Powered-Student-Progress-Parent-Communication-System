@@ -3,9 +3,10 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const baseLinks = [
+  { to: "/admin", label: "Dashboard", roles: ["ADMIN"] },
   { to: "/teacher", label: "Dashboard", roles: ["TEACHER"] },
   { to: "/parent", label: "Dashboard", roles: ["PARENT"] },
-  { to: "/messages", label: "Messages", roles: ["TEACHER", "PARENT"] },
+  { to: "/messages", label: "Messages", roles: ["TEACHER", "PARENT", "ADMIN"] },
   { to: "/ai-insights", label: "AI Insights", roles: ["TEACHER"] }
 ];
 
