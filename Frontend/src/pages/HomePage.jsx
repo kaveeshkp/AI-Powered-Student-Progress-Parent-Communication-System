@@ -201,9 +201,9 @@ export default function HomePage() {
         .navbar {
           position: fixed; top: 0; left: 0; right: 0;
           z-index: 50;
-          height: 64px;
+          height: 70px;
           display: flex; align-items: center;
-          padding: 0 2rem;
+          padding: 0 1.25rem;
           background: rgba(5,8,16,0.7);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
@@ -212,6 +212,13 @@ export default function HomePage() {
           transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
         }
         .navbar.nav-visible { opacity: 1; transform: translateY(0); }
+        .navbar-inner {
+          width: min(1200px, 100%);
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
         .nav-logo {
           font-family: 'Fraunces', serif;
           font-size: 1.25rem; font-weight: 600;
@@ -263,8 +270,9 @@ export default function HomePage() {
           display: flex; flex-direction: column;
           align-items: center; justify-content: center;
           text-align: center;
-          padding: 8rem 1.5rem 5rem;
+          padding: 8.5rem 1.5rem 5.5rem;
         }
+        .hero-inner { width: min(1080px, 100%); }
 
         .hero-badge {
           display: inline-flex; align-items: center; gap: 0.5rem;
@@ -315,8 +323,29 @@ export default function HomePage() {
           color: var(--muted2);
           max-width: 540px;
           line-height: 1.7;
+          margin-left: auto;
+          margin-right: auto;
           opacity: 0; transform: translateY(16px);
           animation: fadeUp 0.7s 0.6s var(--ease) forwards;
+        }
+
+        .hero-trust {
+          margin-top: 1.3rem;
+          display: flex;
+          justify-content: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          opacity: 0;
+          transform: translateY(12px);
+          animation: fadeUp 0.6s 0.68s var(--ease) forwards;
+        }
+        .hero-pill {
+          border-radius: 999px;
+          padding: 0.33rem 0.72rem;
+          font-size: 0.72rem;
+          color: var(--muted2);
+          border: 1px solid var(--border);
+          background: rgba(255,255,255,0.02);
         }
 
         .hero-actions {
@@ -380,18 +409,23 @@ export default function HomePage() {
         /* ── Stats bar ── */
         .stats-bar {
           position: relative; z-index: 10;
-          display: flex; flex-wrap: wrap; justify-content: center;
-          gap: 0;
+          display: block;
           border-top: 1px solid var(--border);
           border-bottom: 1px solid var(--border);
           background: rgba(255,255,255,0.015);
           backdrop-filter: blur(8px);
-          padding: 0.25rem 0;
+          padding: 0.85rem 1.5rem;
+        }
+        .stats-inner {
+          width: min(1100px, 100%);
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
         .stat-item {
-          flex: 1; min-width: 140px;
+          min-width: 120px;
           text-align: center;
-          padding: 1.6rem 2rem;
+          padding: 1.2rem 1rem;
           border-right: 1px solid var(--border);
           opacity: 0; transform: translateY(10px);
           transition: background 0.2s;
@@ -414,7 +448,7 @@ export default function HomePage() {
         /* ── Section ── */
         .section {
           position: relative; z-index: 10;
-          padding: 6rem 1.5rem;
+          padding: 6.5rem 1.5rem;
           max-width: 1100px;
           margin: 0 auto;
         }
@@ -446,7 +480,7 @@ export default function HomePage() {
         /* ── Role cards ── */
         .roles-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
           gap: 1.25rem;
           margin-top: 3rem;
         }
@@ -533,7 +567,7 @@ export default function HomePage() {
           background: rgba(255,255,255,0.015);
           border-top: 1px solid var(--border);
           border-bottom: 1px solid var(--border);
-          padding: 4rem 1.5rem;
+          padding: 4.5rem 1.5rem;
         }
         .features-inner {
           max-width: 1100px; margin: 0 auto;
@@ -543,6 +577,16 @@ export default function HomePage() {
         }
         .feature-item {
           display: flex; flex-direction: column; gap: 0.6rem;
+          border: 1px solid var(--border);
+          background: rgba(255,255,255,0.02);
+          border-radius: 16px;
+          padding: 1rem;
+          transition: transform 0.2s, border-color 0.2s, background 0.2s;
+        }
+        .feature-item:hover {
+          transform: translateY(-2px);
+          border-color: rgba(45,212,191,0.25);
+          background: rgba(45,212,191,0.05);
         }
         .feature-icon {
           font-size: 1.5rem; width: 44px; height: 44px;
@@ -572,6 +616,7 @@ export default function HomePage() {
           border-radius: 28px;
           padding: 3.5rem 2.5rem;
           position: relative; overflow: hidden;
+          box-shadow: 0 18px 50px rgba(0,0,0,0.35);
         }
         .cta-card::before {
           content: '';
@@ -601,9 +646,16 @@ export default function HomePage() {
         .footer {
           position: relative; z-index: 10;
           border-top: 1px solid var(--border);
-          padding: 2rem 2rem;
-          display: flex; align-items: center; justify-content: space-between;
-          flex-wrap: wrap; gap: 1rem;
+          padding: 2rem 1.5rem;
+        }
+        .footer-inner {
+          width: min(1100px, 100%);
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 1rem;
         }
         .footer-copy {
           font-size: 0.78rem; color: var(--muted);
@@ -622,10 +674,28 @@ export default function HomePage() {
         }
 
         /* ── Responsive ── */
+        @media (max-width: 1024px) {
+          .hero-headline { max-width: 680px; }
+          .stats-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .stat-item:nth-child(2) { border-right: none; }
+          .stat-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+        }
+
         @media (max-width: 640px) {
           .hero-headline { font-size: 2.2rem; }
+          .hero-sub { font-size: 0.95rem; line-height: 1.65; }
           .nav-links .nav-link { display: none; }
-          .stat-item { min-width: 120px; padding: 1.2rem 1rem; }
+          .navbar { height: 64px; }
+          .navbar-inner { gap: 0.5rem; }
+          .nav-cta { padding: 0.46rem 0.9rem; font-size: 0.78rem; }
+          .stats-bar { padding: 0.7rem 1rem; }
+          .stats-inner { grid-template-columns: 1fr; }
+          .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+          .stat-item:last-child { border-bottom: none; }
+          .section { padding: 5rem 1rem; }
+          .features-strip { padding: 3.6rem 1rem; }
+          .cta-section { padding: 5rem 1rem; }
+          .cta-card { padding: 2.4rem 1.25rem; border-radius: 22px; }
         }
       `}</style>
 
@@ -634,78 +704,90 @@ export default function HomePage() {
 
         {/* ── Navbar ── */}
         <nav className={`navbar ${mounted ? "nav-visible" : ""}`}>
-          <a href="#" className="nav-logo">
-            <span className="nav-logo-dot" />
-            EduPortal
-          </a>
-          <div className="nav-links">
-            <a href="#roles" className="nav-link">Features</a>
-            <a href="#about" className="nav-link">About</a>
-            {isAuthenticated ? (
-              <Link to={dashboardPath} className="nav-cta">Dashboard →</Link>
-            ) : (
-              <>
-                <Link to={PATHS.LOGIN} className="nav-link">Sign in</Link>
-                <Link to={PATHS.REGISTER} className="nav-cta">Get started →</Link>
-              </>
-            )}
+          <div className="navbar-inner">
+            <Link to={PATHS.HOME} className="nav-logo">
+              <span className="nav-logo-dot" />
+              EduPortal
+            </Link>
+            <div className="nav-links">
+              <a href="#roles" className="nav-link">Features</a>
+              <a href="#about" className="nav-link">About</a>
+              {isAuthenticated ? (
+                <Link to={dashboardPath} className="nav-cta">Dashboard →</Link>
+              ) : (
+                <>
+                  <Link to={PATHS.LOGIN} className="nav-link">Sign in</Link>
+                  <Link to={PATHS.REGISTER} className="nav-cta">Get started →</Link>
+                </>
+              )}
+            </div>
           </div>
         </nav>
 
         {/* ── Hero ── */}
         <section className="hero">
-          <div className="hero-badge">
-            <span className="hero-badge-dot" />
-            Trusted by 500+ institutions
-          </div>
+          <div className="hero-inner">
+            <div className="hero-badge">
+              <span className="hero-badge-dot" />
+              Trusted by 500+ institutions
+            </div>
 
-          <h1 className="hero-headline">
-            One portal built for{" "}
-            <em><Typewriter /></em>
-          </h1>
+            <h1 className="hero-headline">
+              One portal built for{" "}
+              <em><Typewriter /></em>
+            </h1>
 
-          <p className="hero-sub">
-            A role-based education platform connecting admins, teachers, and parents — with AI-powered insights, real-time messaging, and seamless access.
-          </p>
+            <p className="hero-sub">
+              A role-based education platform connecting admins, teachers, and parents with AI-powered insights, real-time messaging, and seamless access.
+            </p>
 
-          <div className="hero-actions">
-            {isAuthenticated ? (
-              <>
-                <Link to={dashboardPath} className="btn-primary">
-                  Open Dashboard <span className="btn-arrow">→</span>
-                </Link>
-                <Link to={PATHS.MESSAGES} className="btn-secondary">
-                  Go to Messages <span className="btn-arrow">→</span>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to={PATHS.REGISTER} className="btn-primary">
-                  Get started free <span className="btn-arrow">→</span>
-                </Link>
-                <Link to={PATHS.LOGIN} className="btn-secondary">
-                  Sign in <span className="btn-arrow">→</span>
-                </Link>
-              </>
-            )}
+            <div className="hero-trust">
+              <span className="hero-pill">Enterprise-grade security</span>
+              <span className="hero-pill">Real-time collaboration</span>
+              <span className="hero-pill">Mobile-ready UX</span>
+            </div>
+
+            <div className="hero-actions">
+              {isAuthenticated ? (
+                <>
+                  <Link to={dashboardPath} className="btn-primary">
+                    Open Dashboard <span className="btn-arrow">→</span>
+                  </Link>
+                  <Link to={PATHS.MESSAGES} className="btn-secondary">
+                    Go to Messages <span className="btn-arrow">→</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to={PATHS.REGISTER} className="btn-primary">
+                    Get started free <span className="btn-arrow">→</span>
+                  </Link>
+                  <Link to={PATHS.LOGIN} className="btn-secondary">
+                    Sign in <span className="btn-arrow">→</span>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </section>
 
         {/* ── Stats ── */}
         <div className="stats-bar">
-          <StatItem value={500}  suffix="+"  label="Institutions"  delay={200} />
-          <StatItem value={12400} suffix="+" label="Active Users"  delay={350} />
-          <StatItem value={98}   suffix="%"  label="Uptime SLA"    delay={500} />
-          <StatItem value={4}    suffix="x"  label="Faster Comms"  delay={650} />
+          <div className="stats-inner">
+            <StatItem value={500}  suffix="+"  label="Institutions"  delay={200} />
+            <StatItem value={12400} suffix="+" label="Active Users"  delay={350} />
+            <StatItem value={98}   suffix="%"  label="Uptime SLA"    delay={500} />
+            <StatItem value={4}    suffix="x"  label="Faster Comms"  delay={650} />
+          </div>
         </div>
 
         {/* ── Roles section ── */}
         <section className="section" id="roles">
-          <div className="section-label">Who it's for</div>
-          <h2 className="section-title">Every role has its own command center</h2>
-          <p className="section-sub">
-            Tailored dashboards and permissions for every member of your institution — no more one-size-fits-all.
-          </p>
+          <SectionHeader
+            label="Who it's for"
+            title="Every role has its own command center"
+            subtitle="Tailored dashboards and permissions for every member of your institution, with no one-size-fits-all friction."
+          />
           <div className="roles-grid">
             <RoleCard
               icon="🛡️"
@@ -745,11 +827,7 @@ export default function HomePage() {
               { icon: "📱", title: "Mobile-ready", desc: "Fully responsive design that works beautifully on any device." },
               { icon: "🌍", title: "Multi-language", desc: "Support for multiple locales and regional academic calendars." },
             ].map((f) => (
-              <div className="feature-item" key={f.title}>
-                <div className="feature-icon">{f.icon}</div>
-                <div className="feature-title">{f.title}</div>
-                <div className="feature-desc">{f.desc}</div>
-              </div>
+              <FeatureTile key={f.title} icon={f.icon} title={f.title} desc={f.desc} />
             ))}
           </div>
         </div>
@@ -783,14 +861,36 @@ export default function HomePage() {
 
         {/* ── Footer ── */}
         <footer className="footer">
-          <div className="footer-copy">© {new Date().getFullYear()} EduPortal. All rights reserved.</div>
-          <div className="footer-links">
-            <a href="#" className="footer-link">Privacy</a>
-            <a href="#" className="footer-link">Terms</a>
-            <a href="#" className="footer-link">Support</a>
+          <div className="footer-inner">
+            <div className="footer-copy">© {new Date().getFullYear()} EduPortal. All rights reserved.</div>
+            <div className="footer-links">
+              <a href="#" className="footer-link">Privacy</a>
+              <a href="#" className="footer-link">Terms</a>
+              <a href="#" className="footer-link">Support</a>
+            </div>
           </div>
         </footer>
       </div>
     </>
+  );
+}
+
+function SectionHeader({ label, title, subtitle }) {
+  return (
+    <>
+      <div className="section-label">{label}</div>
+      <h2 className="section-title">{title}</h2>
+      <p className="section-sub">{subtitle}</p>
+    </>
+  );
+}
+
+function FeatureTile({ icon, title, desc }) {
+  return (
+    <div className="feature-item">
+      <div className="feature-icon">{icon}</div>
+      <div className="feature-title">{title}</div>
+      <div className="feature-desc">{desc}</div>
+    </div>
   );
 }
