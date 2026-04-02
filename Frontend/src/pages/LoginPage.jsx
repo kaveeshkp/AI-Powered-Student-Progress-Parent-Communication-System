@@ -113,6 +113,14 @@ function LoginPage() {
     }
   };
 
+  const onBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate("/", { replace: true });
+  };
+
   return (
     <>
       {/* ── Inline styles ── */}
@@ -211,6 +219,30 @@ function LoginPage() {
             0 40px 100px rgba(0,0,0,0.7),
             0 0 160px rgba(99,102,241,0.1) inset;
         }
+
+        .back-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 10px;
+          color: var(--muted);
+          font-size: 0.75rem;
+          font-weight: 600;
+          letter-spacing: 0.03em;
+          padding: 0.42rem 0.72rem;
+          cursor: pointer;
+          transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s;
+          margin-bottom: 1rem;
+        }
+        .back-btn:hover {
+          color: #fff;
+          background: rgba(99,102,241,0.12);
+          border-color: rgba(99,102,241,0.45);
+          transform: translateY(-1px);
+        }
+        .back-btn:active { transform: translateY(0); }
 
         /* shimmer top line */
         .card::before {
@@ -517,6 +549,13 @@ function LoginPage() {
             onMouseLeave={handleMouseLeave}
             style={{ position: "relative" }}
           >
+            <button type="button" onClick={onBack} className="back-btn" aria-label="Go back">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+              Back
+            </button>
+
             {/* Success overlay */}
             {success && (
               <div className="success-overlay">
