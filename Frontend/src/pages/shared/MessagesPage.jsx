@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import DashboardLayout from "../layouts/DashboardLayout";
-import { useAuth } from "../context/AuthContext";
-import { getThreadMessages, getThreads, sendMessage } from "../services/messageService";
+import DashboardLayout from "../../layouts/DashboardLayout";
+import { useAuth } from "../../context/AuthContext";
+import { getThreadMessages, getThreads, sendMessage } from "../../services/messageService";
 
 function MessagesPage() {
   const { user } = useAuth();

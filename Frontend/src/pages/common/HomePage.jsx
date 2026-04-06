@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { getDefaultPathByRole, PATHS } from "../routes/paths";
+import { useAuth } from "../../context/AuthContext";
+import { getDefaultPathByRole, PATHS } from "../../routes/paths";
 
 /* ─── Animated counter ───────────────────────────────────────────────────── */
 function Counter({ to, suffix = "" }) {

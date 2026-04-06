@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import DashboardLayout from "../layouts/DashboardLayout";
-import { useAuth } from "../context/AuthContext";
-import { getStudents } from "../services/studentService";
-import { getThreads } from "../services/messageService";
-import RoleGate from "../routes/RoleGate";
+import DashboardLayout from "../../layouts/DashboardLayout";
+import { useAuth } from "../../context/AuthContext";
+import { getStudents } from "../../services/studentService";
+import { getThreads } from "../../services/messageService";
+import RoleGate from "../../routes/RoleGate";
 
 function ParentDashboard() {
   const { user } = useAuth();

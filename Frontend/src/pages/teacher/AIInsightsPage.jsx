@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { getClassInsights } from "../services/aiService";
-import RoleGate from "../routes/RoleGate";
+import { useAuth } from "../../context/AuthContext";
+import { getClassInsights } from "../../services/aiService";
+import RoleGate from "../../routes/RoleGate";
 
 /* ─────────────────────────────────────────────────────────────────────────
    STYLES

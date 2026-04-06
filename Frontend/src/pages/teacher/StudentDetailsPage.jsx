@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import DashboardLayout from "../layouts/DashboardLayout";
+import { useAuth } from "../../context/AuthContext";
+import DashboardLayout from "../../layouts/DashboardLayout";
 import {
   ResponsiveContainer,
   LineChart,
@@ -14,7 +14,7 @@ import {
   BarChart,
   Bar
 } from "recharts";
-import { getStudentAttendance, getStudentById, getStudentGrades } from "../services/studentService";
+import { getStudentAttendance, getStudentById, getStudentGrades } from "../../services/studentService";
 
 function StudentDetailsPage() {
   const { studentId } = useParams();

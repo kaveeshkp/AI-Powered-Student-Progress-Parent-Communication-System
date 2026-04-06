@@ -3,11 +3,24 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const baseLinks = [
-  { to: "/admin", label: "Dashboard", roles: ["ADMIN"] },
-  { to: "/teacher", label: "Dashboard", roles: ["TEACHER"] },
-  { to: "/parent", label: "Dashboard", roles: ["PARENT"] },
-  { to: "/messages", label: "Messages", roles: ["TEACHER", "PARENT", "ADMIN"] },
-  { to: "/ai-insights", label: "AI Insights", roles: ["TEACHER"] }
+  // Admin
+  { to: "/admin", label: "Dashboard", icon: "⊞", roles: ["ADMIN"] },
+  
+  // Teacher
+  { to: "/teacher", label: "Overview", icon: "⊞", roles: ["TEACHER"] },
+  { to: "/teacher/students", label: "Students", icon: "👥", roles: ["TEACHER"] },
+  { to: "/teacher/assignments", label: "Assignments", icon: "📋", roles: ["TEACHER"] },
+  { to: "/teacher/grades", label: "Grades", icon: "📊", roles: ["TEACHER"] },
+  { to: "/teacher/attendance", label: "Attendance", icon: "✅", roles: ["TEACHER"] },
+  { to: "/teacher/schedule", label: "Schedule", icon: "🗓️", roles: ["TEACHER"] },
+  { to: "/teacher/messages", label: "Messages", icon: "💬", roles: ["TEACHER"] },
+  { to: "/ai-insights", label: "AI Insights", icon: "🤖", roles: ["TEACHER"] },
+  
+  // Parent
+  { to: "/parent", label: "Dashboard", icon: "⊞", roles: ["PARENT"] },
+  
+  // Shared
+  { to: "/messages", label: "Messages", icon: "💬", roles: ["PARENT", "ADMIN"] }
 ];
 
 function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {
@@ -68,6 +81,7 @@ function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {
                 }
                 onClick={() => setIsSidebarOpen(false)}
               >
+                {link.icon && <span className="text-base">{link.icon}</span>}
                 <span>{link.label}</span>
               </NavLink>
             ))}
