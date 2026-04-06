@@ -32,7 +32,6 @@ com\example\studentapp\entity\Announcement$AnnouncementBuilder.class
 com\example\studentapp\controller\AuthController.class
 com\example\studentapp\entity\Grade$GradeBuilder.class
 com\example\studentapp\entity\Student.class
-com\example\studentapp\entity\User$UserBuilder.class
 com\example\studentapp\controller\HealthController.class
 com\example\studentapp\repository\StudentRepository.class
 com\example\studentapp\entity\BaseEntity.class
