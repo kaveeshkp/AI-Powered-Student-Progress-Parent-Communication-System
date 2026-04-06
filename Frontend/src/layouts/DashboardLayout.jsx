@@ -1,26 +1,27 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { PATHS } from "../routes/paths";
 
 const baseLinks = [
   // Admin
-  { to: "/admin", label: "Dashboard", icon: "⊞", roles: ["ADMIN"] },
+  { to: PATHS.ADMIN, label: "Dashboard", icon: "⊞", roles: ["ADMIN"] },
   
   // Teacher
-  { to: "/teacher", label: "Overview", icon: "⊞", roles: ["TEACHER"] },
-  { to: "/teacher/students", label: "Students", icon: "👥", roles: ["TEACHER"] },
-  { to: "/teacher/assignments", label: "Assignments", icon: "📋", roles: ["TEACHER"] },
-  { to: "/teacher/grades", label: "Grades", icon: "📊", roles: ["TEACHER"] },
-  { to: "/teacher/attendance", label: "Attendance", icon: "✅", roles: ["TEACHER"] },
-  { to: "/teacher/schedule", label: "Schedule", icon: "🗓️", roles: ["TEACHER"] },
-  { to: "/teacher/messages", label: "Messages", icon: "💬", roles: ["TEACHER"] },
-  { to: "/ai-insights", label: "AI Insights", icon: "🤖", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER, label: "Overview", icon: "⊞", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_STUDENTS, label: "Students", icon: "👥", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_ASSIGNMENTS, label: "Assignments", icon: "📋", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_GRADES, label: "Grades", icon: "📊", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_ATTENDANCE, label: "Attendance", icon: "✅", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_SCHEDULE, label: "Schedule", icon: "🗓️", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_MESSAGES, label: "Messages", icon: "💬", roles: ["TEACHER"] },
+  { to: PATHS.AI_INSIGHTS, label: "AI Insights", icon: "🤖", roles: ["TEACHER"] },
   
   // Parent
-  { to: "/parent", label: "Dashboard", icon: "⊞", roles: ["PARENT"] },
+  { to: PATHS.PARENT, label: "Dashboard", icon: "⊞", roles: ["PARENT"] },
   
   // Shared
-  { to: "/messages", label: "Messages", icon: "💬", roles: ["PARENT", "ADMIN"] }
+  { to: PATHS.MESSAGES, label: "Messages", icon: "💬", roles: ["PARENT", "ADMIN"] }
 ];
 
 function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {
@@ -89,7 +90,7 @@ function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {
           <div className="mt-4 rounded-lg border border-slate-800 bg-slate-800/60 px-3 py-3 text-xs text-slate-300">
             <p className="font-semibold text-slate-100">Need help?</p>
             <p className="mt-1">Reach out to support or your administrator.</p>
-            <Link to="/messages" className="mt-2 inline-block text-indigo-300 hover:text-indigo-200">
+            <Link to={PATHS.MESSAGES} className="mt-2 inline-block text-indigo-300 hover:text-indigo-200">
               Go to messages →
             </Link>
           </div>

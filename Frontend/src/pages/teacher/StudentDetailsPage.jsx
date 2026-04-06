@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { PATHS } from "../../routes/paths";
 import { useAuth } from "../../context/AuthContext";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import {
@@ -99,7 +99,7 @@ function StudentDetailsPage() {
         </div>
         <div className="flex items-center gap-2">
           <Link
-            to="/teacher"
+            to={PATHS.TEACHER}
             className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-700"
           >
             Back to dashboard

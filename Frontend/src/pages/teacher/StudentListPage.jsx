@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { PATHS } from "../../routes/paths";
 import { useAuth } from "../../context/AuthContext";
 import { getStudents } from "../../services/studentService";
 
@@ -116,7 +116,7 @@ function StudentCard({ student }) {
         </div>
       </div>
       <div className="sc-actions">
-        <Link to={`/teacher/students/${student.id}`} className="btn-sm">View Details</Link>
+        <Link to={PATHS.TEACHER_STUDENTS_DETAIL(student.id)} className="btn-sm">View Details</Link>
         <button className="btn-sm">📧 Contact</button>
       </div>
     </div>
@@ -147,7 +147,7 @@ function StudentListPage() {
       <style>{CSS}</style>
       <div className="page-root">
         <header className="page-header">
-          <Link to="/teacher" className="page-header-back">←</Link>
+          <Link to={PATHS.TEACHER} className="page-header-back">←</Link>
           <h1 className="page-title">Students Directory</h1>
         </header>
 

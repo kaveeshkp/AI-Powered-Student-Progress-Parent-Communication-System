@@ -576,7 +576,7 @@ function RegisterPage() {
             <div className="divider"><span /><p>Already have an account?</p><span /></div>
 
             <p className="login-row">
-              <Link to="/login" className="login-link">Sign in instead</Link>
+              <Link to={PATHS.LOGIN} className="login-link">Sign in instead</Link>
             </p>
 
             <p className="terms-note">

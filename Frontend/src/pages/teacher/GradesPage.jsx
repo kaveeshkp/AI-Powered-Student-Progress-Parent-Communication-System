@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { PATHS } from "../../routes/paths";
 import { useAuth } from "../../context/AuthContext";
 
 const CSS = `
@@ -97,7 +97,7 @@ function GradesPage() {
       <style>{CSS}</style>
       <div className="page-root">
         <header className="page-header">
-          <Link to="/teacher" className="page-header-back">←</Link>
+          <Link to={PATHS.TEACHER} className="page-header-back">←</Link>
           <h1 className="page-title">Grade Book</h1>
         </header>
 

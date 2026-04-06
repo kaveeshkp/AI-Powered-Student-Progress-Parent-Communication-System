@@ -425,7 +425,7 @@ function AIInsightsPage() {
                   )}
                 </button>
                 {hasGenerated && (
-                  <Link to="/teacher" className="btn-ghost">← Back to Dashboard</Link>
+                  <Link to={PATHS.TEACHER} className="btn-ghost">← Back to Dashboard</Link>
                 )}
               </div>
             </div>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getStudents } from "../../services/studentService";
+import { PATHS } from "../../routes/paths";
 import RoleGate from "../../routes/RoleGate";
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -372,8 +373,8 @@ const NAV = [
   { label: "Assignments", icon: "📋", to: "/teacher/assignments" },
   { label: "Grades",      icon: "📊", to: "/teacher/grades" },
   { label: "Attendance",  icon: "✅", to: "/teacher/attendance" },
-  { label: "Messages",    icon: "💬", to: "/teacher/messages" },
-  { label: "AI Insights", icon: "🤖", to: "/ai-insights" },
+  { label: "Messages",    icon: "💬", to: PATHS.TEACHER_MESSAGES },
+  { label: "AI Insights", icon: "🤖", to: PATHS.AI_INSIGHTS },
   { label: "Schedule",    icon: "🗓️", to: "/teacher/schedule" },
 ];
 
@@ -598,13 +599,13 @@ function TeacherDashboard() {
               </p>
               <div className="hero-actions">
                 <RoleGate allowedRoles={["TEACHER"]}>
-                  <Link to="/ai-insights" className="btn-primary">
+                  <Link to={PATHS.AI_INSIGHTS} className="btn-primary">
                     View AI Insights
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </Link>
                 </RoleGate>
                 <RoleGate allowedRoles={["TEACHER"]}>
-                  <Link to="/teacher/messages" className="btn-ghost">Open Messages</Link>
+                  <Link to={PATHS.TEACHER_MESSAGES} className="btn-ghost">Open Messages</Link>
                 </RoleGate>
               </div>
             </div>
@@ -664,7 +665,7 @@ function TeacherDashboard() {
                             <span className="pill pill-grade">{s.grade}</span>
                             <span className="pill pill-att">{s.attendance}</span>
                           </div>
-                          <Link to={`/teacher/students/${s.id}`} className="roster-view-btn">View →</Link>
+                          <Link to={PATHS.TEACHER_STUDENTS_DETAIL(s.id)} className="roster-view-btn">View →</Link>
                         </div>
                       ))}
                     </div>
@@ -683,8 +684,8 @@ function TeacherDashboard() {
                 <SectionCard eyebrow="Actions" title="Quick Actions" desc="Jump into your most-used workflows." delay="0.4s">
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
                     {[
-                      { to: "/teacher/messages", icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
-                      { to: "/ai-insights", icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
+                      { to: PATHS.TEACHER_MESSAGES, icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
+                      { to: PATHS.AI_INSIGHTS, icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
                       { to: "/teacher/grades",      icon: "📊", title: "Grade Book",      sub: "Enter and manage marks" },
                       { to: "/teacher/attendance",  icon: "✅", title: "Attendance",      sub: "Mark and review presence" },
                     ].map((a) => (

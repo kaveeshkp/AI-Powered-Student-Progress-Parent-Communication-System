@@ -667,7 +667,7 @@ function LoginPage() {
             </div>
             <p className="register-row">
               Don't have an account?{" "}
-              <Link to="/register" className="register-link">Create one</Link>
+              <Link to={PATHS.REGISTER} className="register-link">Create one</Link>
             </p>
           </div>
         </div>

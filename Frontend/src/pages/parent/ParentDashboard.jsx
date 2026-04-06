@@ -4,6 +4,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
 import { getStudents } from "../../services/studentService";
 import { getThreads } from "../../services/messageService";
+import { PATHS } from "../../routes/paths";
 import RoleGate from "../../routes/RoleGate";
 
 function ParentDashboard() {
@@ -88,7 +89,7 @@ function ParentDashboard() {
                     <p className="text-xs text-slate-400">Grade {child.grade} · Attendance {child.attendance}</p>
                   </div>
                   <Link
-                    to={`/parent/student/${child.id}`}
+                    to={PATHS.PARENT_STUDENT_DETAIL(child.id)}
                     className="rounded-lg border border-indigo-500/50 px-3 py-1 text-xs font-semibold text-indigo-200 hover:bg-indigo-500/10"
                   >
                     View
@@ -139,14 +140,14 @@ function ParentDashboard() {
           <div className="mt-4 flex flex-col gap-2">
             <RoleGate allowedRoles={["PARENT"]}>
               <Link
-                to="/messages"
+                to={PATHS.MESSAGES}
                 className="rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white shadow-md hover:bg-indigo-400"
               >
                 Open Messages
               </Link>
             </RoleGate>
             <Link
-              to="/login"
+              to={PATHS.LOGIN}
               className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-700"
             >
               Switch account

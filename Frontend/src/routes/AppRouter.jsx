@@ -51,18 +51,19 @@ function AppRouter() {
 
       <Route element={<ProtectedRoute allowedRoles={["TEACHER"]} />}>
         <Route path={PATHS.TEACHER} element={<TeacherDashboard />} />
-        <Route path={`${PATHS.TEACHER}/students`} element={<StudentListPage />} />
+        <Route path={PATHS.TEACHER_STUDENTS} element={<StudentListPage />} />
         <Route path={`${PATHS.TEACHER}/students/:studentId`} element={<StudentDetailsPage />} />
-        <Route path={`${PATHS.TEACHER}/assignments`} element={<AssignmentsPage />} />
-        <Route path={`${PATHS.TEACHER}/grades`} element={<GradesPage />} />
-        <Route path={`${PATHS.TEACHER}/attendance`} element={<AttendancePage />} />
-        <Route path={`${PATHS.TEACHER}/schedule`} element={<SchedulePage />} />
-        <Route path={`${PATHS.TEACHER}/messages`} element={<MessagesSectionPage />} />
+        <Route path={PATHS.TEACHER_ASSIGNMENTS} element={<AssignmentsPage />} />
+        <Route path={PATHS.TEACHER_GRADES} element={<GradesPage />} />
+        <Route path={PATHS.TEACHER_ATTENDANCE} element={<AttendancePage />} />
+        <Route path={PATHS.TEACHER_SCHEDULE} element={<SchedulePage />} />
+        <Route path={PATHS.TEACHER_MESSAGES} element={<MessagesSectionPage />} />
         <Route path={PATHS.AI_INSIGHTS} element={<AIInsightsPage />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["PARENT"]} />}>
         <Route path={PATHS.PARENT} element={<ParentDashboard />} />
+        <Route path={`${PATHS.PARENT}/student/:id`} element={<StudentDetailsPage />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["ADMIN", "TEACHER", "PARENT"]} />}>

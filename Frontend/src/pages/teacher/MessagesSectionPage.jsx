@@ -206,7 +206,7 @@ function MessagesSection() {
       <style>{CSS}</style>
       <div className="msg-root">
         <header className="msg-header">
-          <Link to="/teacher" className="msg-header-back">←</Link>
+          <Link to={PATHS.TEACHER} className="msg-header-back">←</Link>
           <h1 className="msg-title">Messages & Communication</h1>
         </header>
 
