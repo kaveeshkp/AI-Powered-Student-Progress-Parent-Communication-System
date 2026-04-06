@@ -1,14 +1,24 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
-import UnauthorizedPage from "../pages/UnauthorizedPage";
-import TeacherDashboard from "../pages/TeacherDashboard";
-import ParentDashboard from "../pages/ParentDashboard";
-import AdminDashboard from "../pages/AdminDashboard";
-import StudentDetailsPage from "../pages/StudentDetailsPage";
-import MessagesPage from "../pages/MessagesPage";
-import AIInsightsPage from "../pages/AIInsightsPage";
+import {
+  HomePage,
+  LoginPage,
+  RegisterPage,
+  UnauthorizedPage,
+} from "../pages/common";
+import {
+  TeacherDashboard,
+  StudentListPage,
+  StudentDetailsPage,
+  AssignmentsPage,
+  GradesPage,
+  AttendancePage,
+  SchedulePage,
+  MessagesSectionPage,
+  AIInsightsPage,
+} from "../pages/teacher";
+import { AdminDashboard } from "../pages/admin";
+import { ParentDashboard } from "../pages/parent";
+import { MessagesPage } from "../pages/shared";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultPathByRole, PATHS } from "./paths";
 import ProtectedRoute from "./ProtectedRoute";
@@ -31,7 +41,13 @@ function AppRouter() {
 
       <Route element={<ProtectedRoute allowedRoles={["TEACHER"]} />}>
         <Route path={PATHS.TEACHER} element={<TeacherDashboard />} />
+        <Route path={`${PATHS.TEACHER}/students`} element={<StudentListPage />} />
         <Route path={`${PATHS.TEACHER}/students/:studentId`} element={<StudentDetailsPage />} />
+        <Route path={`${PATHS.TEACHER}/assignments`} element={<AssignmentsPage />} />
+        <Route path={`${PATHS.TEACHER}/grades`} element={<GradesPage />} />
+        <Route path={`${PATHS.TEACHER}/attendance`} element={<AttendancePage />} />
+        <Route path={`${PATHS.TEACHER}/schedule`} element={<SchedulePage />} />
+        <Route path={`${PATHS.TEACHER}/messages`} element={<MessagesSectionPage />} />
         <Route path={PATHS.AI_INSIGHTS} element={<AIInsightsPage />} />
       </Route>
 

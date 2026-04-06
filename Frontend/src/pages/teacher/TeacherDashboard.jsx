@@ -372,7 +372,7 @@ const NAV = [
   { label: "Assignments", icon: "📋", to: "/teacher/assignments" },
   { label: "Grades",      icon: "📊", to: "/teacher/grades" },
   { label: "Attendance",  icon: "✅", to: "/teacher/attendance" },
-  { label: "Messages",    icon: "💬", to: "/messages" },
+  { label: "Messages",    icon: "💬", to: "/teacher/messages" },
   { label: "AI Insights", icon: "🤖", to: "/ai-insights" },
   { label: "Schedule",    icon: "🗓️", to: "/teacher/schedule" },
 ];
@@ -604,7 +604,7 @@ function TeacherDashboard() {
                   </Link>
                 </RoleGate>
                 <RoleGate allowedRoles={["TEACHER"]}>
-                  <Link to="/messages" className="btn-ghost">Open Messages</Link>
+                  <Link to="/teacher/messages" className="btn-ghost">Open Messages</Link>
                 </RoleGate>
               </div>
             </div>
@@ -683,7 +683,7 @@ function TeacherDashboard() {
                 <SectionCard eyebrow="Actions" title="Quick Actions" desc="Jump into your most-used workflows." delay="0.4s">
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
                     {[
-                      { to: "/messages",    icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
+                      { to: "/teacher/messages", icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
                       { to: "/ai-insights", icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
                       { to: "/teacher/grades",      icon: "📊", title: "Grade Book",      sub: "Enter and manage marks" },
                       { to: "/teacher/attendance",  icon: "✅", title: "Attendance",      sub: "Mark and review presence" },
@@ -732,12 +732,172 @@ function TeacherDashboard() {
               </div>
             </SectionCard>
 
+            {/* ── Class Schedule ── */}
+            <SectionCard
+              eyebrow="Schedule"
+              title="Today's Classes"
+              desc="Review your scheduled sessions and upcoming lessons."
+              delay="0.52s"
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", marginTop: "0.75rem" }}>
+                {[
+                  { time: "09:00 AM", class: "Mathematics - Grade 10A", room: "Room 201", students: 28 },
+                  { time: "10:45 AM", class: "Mathematics - Grade 10B", room: "Room 202", students: 32 },
+                  { time: "01:00 PM", class: "Advanced Calculus - Grade 12", room: "Lab 101", students: 22 },
+                ].map((s, i) => (
+                  <div key={i} style={{ padding: "0.85rem 1rem", borderRadius: 12, background: "var(--surface2)", border: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--cyan)" }}>{s.time}</div>
+                      <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "#fff", marginTop: "0.3rem" }}>{s.class}</div>
+                      <div style={{ fontSize: "0.7rem", color: "var(--muted)", marginTop: "0.2rem" }}>{s.room} • {s.students} students</div>
+                    </div>
+                    <button style={{ padding: "0.4rem 0.8rem", borderRadius: 8, background: "var(--cyan-dim)", border: "1px solid rgba(34,211,238,0.2)", color: "var(--cyan)", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}>
+                      Mark Attendance
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+
+            {/* ── Pending Assignments ── */}
+            <SectionCard
+              eyebrow="Grading"
+              title="Pending Assignments"
+              desc="Track assignments awaiting your review and marks."
+              delay="0.57s"
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", marginTop: "0.75rem" }}>
+                {[
+                  { title: "Physics Project: Solar System", submitted: 24, pending: 4, dueDate: "2024-04-08" },
+                  { title: "Chemistry Lab Report", submitted: 28, pending: 2, dueDate: "2024-04-010" },
+                  { title: "Biology Research Essay", submitted: 18, pending: 10, dueDate: "2024-04-15" },
+                ].map((a, i) => (
+                  <div key={i} style={{ padding: "0.85rem 1rem", borderRadius: 12, background: "var(--surface2)", border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                      <div>
+                        <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "#fff" }}>{a.title}</div>
+                        <div style={{ fontSize: "0.7rem", color: "var(--muted)", marginTop: "0.4rem" }}>
+                          {a.submitted} submitted • <span style={{ color: a.pending > 0 ? "var(--amber)" : "var(--emerald)" }}>{a.pending} pending</span>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: "0.7rem", fontWeight: 600, color: "var(--muted)" }}>Due: {a.dueDate}</div>
+                        <div style={{ fontSize: "0.75rem", color: a.pending > 0 ? "var(--amber)" : "var(--emerald)", marginTop: "0.3rem", fontWeight: 600 }}>
+                          {a.pending > 0 ? `${a.pending} awaiting` : "All done"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+
+            {/* ── Recent Activity ── */}
+            <div className="two-col">
+              <SectionCard
+                eyebrow="Activity"
+                title="Recent Activity"
+                desc="Track latest updates and interactions from your students."
+                delay="0.62s"
+              >
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "0.75rem" }}>
+                  {[
+                    { icon: "📝", action: "Student submitted assignment", student: "John Doe", time: "2 hours ago" },
+                    { icon: "💬", action: "Parent message received", student: "Sarah's Parent", time: "5 hours ago" },
+                    { icon: "⚠️", action: "Low attendance alert", student: "Mike Johnson", time: "1 day ago" },
+                    { icon: "⭐", action: "Quiz result recorded", student: "Emma Smith", time: "1 day ago" },
+                  ].map((a, i) => (
+                    <div key={i} style={{ padding: "0.7rem 0.9rem", borderRadius: 10, background: "rgba(34,211,238,0.03)", border: "1px solid rgba(34,211,238,0.08)", display: "flex", gap: "0.7rem", alignItems: "center" }}>
+                      <span style={{ fontSize: "1.2rem" }}>{a.icon}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: "0.77rem", fontWeight: 600, color: "#fff" }}>{a.action}</div>
+                        <div style={{ fontSize: "0.68rem", color: "var(--muted)", marginTop: "2px" }}>{a.student} • {a.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+
+              {/* Class Performance Summary */}
+              <SectionCard
+                eyebrow="Analytics"
+                title="Class Performance"
+                desc="Quick overview of class metrics this term."
+                delay="0.67s"
+              >
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.9rem", marginTop: "0.75rem" }}>
+                  {[
+                    { label: "Class Average", value: "78.5%", color: "var(--emerald)", width: "78%" },
+                    { label: "Attendance Rate", value: "94.2%", color: "var(--cyan)", width: "94%" },
+                    { label: "Assignment Completion", value: "87.3%", color: "var(--amber)", width: "87%" },
+                  ].map((p, i) => (
+                    <div key={i}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+                        <div style={{ fontSize: "0.77rem", fontWeight: 600, color: "var(--muted)" }}>{p.label}</div>
+                        <div style={{ fontSize: "0.77rem", fontWeight: 700, color: p.color }}>{p.value}</div>
+                      </div>
+                      <div style={{ height: "6px", background: "var(--surface2)", borderRadius: "3px", overflow: "hidden" }}>
+                        <div style={{ height: "100%", background: p.color, width: p.width, transition: "width 0.4s ease" }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+            </div>
+
+            {/* ── Communication Hub ── */}
+            <SectionCard
+              eyebrow="Communication"
+              title="Parent Engagement"
+              desc="Manage outreach and stay connected with guardians."
+              delay="0.72s"
+            >
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem", marginTop: "0.75rem" }}>
+                {[
+                  { label: "Unread Messages", count: 3, icon: "💬", color: "var(--cyan)" },
+                  { label: "Requires Response", count: 2, icon: "⏳", color: "var(--amber)" },
+                  { label: "Pending Meetings", count: 1, icon: "📅", color: "var(--emerald)" },
+                ].map((c, i) => (
+                  <div key={i} style={{ padding: "1rem", borderRadius: 14, background: "var(--surface2)", border: "1px solid var(--border)", textAlign: "center" }}>
+                    <div style={{ fontSize: "1.8rem", marginBottom: "0.5rem" }}>{c.icon}</div>
+                    <div style={{ fontSize: "1.6rem", fontWeight: 700, color: c.color, lineHeight: 1 }}>{c.count}</div>
+                    <div style={{ fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.5rem" }}>{c.label}</div>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+
+            {/* ── Resource Library ── */}
+            <SectionCard
+              eyebrow="Resources"
+              title="Teaching Resources"
+              desc="Quick access to lesson plans, templates, and tools."
+              delay="0.77s"
+            >
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.9rem", marginTop: "0.75rem" }}>
+                {[
+                  { name: "Lesson Plans", icon: "📚", count: 12 },
+                  { name: "Quiz Bank", icon: "❓", count: 45 },
+                  { name: "Rubrics", icon: "✓", count: 8 },
+                  { name: "Handouts", icon: "📄", count: 23 },
+                  { name: "Videos", icon: "🎬", count: 34 },
+                  { name: "Templates", icon: "📋", count: 16 },
+                ].map((r, i) => (
+                  <div key={i} style={{ padding: "0.9rem 1rem", borderRadius: 12, background: "var(--surface2)", border: "1px solid var(--border)", textAlign: "center", cursor: "pointer", transition: "border-color 0.2s, transform 0.2s" }}>
+                    <div style={{ fontSize: "1.8rem", marginBottom: "0.4rem" }}>{r.icon}</div>
+                    <div style={{ fontSize: "0.78rem", fontWeight: 600, color: "#fff" }}>{r.name}</div>
+                    <div style={{ fontSize: "0.68rem", color: "var(--muted)", marginTop: "0.3rem" }}>{r.count} items</div>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+
             {/* ── Stat row ── */}
             <SectionCard
               eyebrow="Workspace"
               title="Teacher Workspace"
               desc={`Welcome, ${user?.fullName || user?.email}. Review classes, monitor attendance, and share updates with parents.`}
-              delay="0.55s"
+              delay="0.82s"
             >
               <div className="stat-row" style={{ marginTop: "0.75rem" }}>
                 <div className="stat-tile">

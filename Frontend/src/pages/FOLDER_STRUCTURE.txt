@@ -1,0 +1,111 @@
+📁 **Pages Folder - Organized Structure**
+
+```
+src/pages/
+│
+├─📂 common/                        [Public Access Pages]
+│  ├─ 📄 index.js                  ← Export HomePage, LoginPage, RegisterPage, UnauthorizedPage
+│  └─ Scope: All users (non-authenticated)
+│
+├─📂 teacher/                       [Teacher-Only Pages]
+│  ├─ 📄 index.js                  ← Export 9 teacher-specific pages
+│  └─ Scope: Role = "TEACHER"
+│     ├─ Dashboard (overview, metrics, quick actions)
+│     ├─ Students (list, details, directory)
+│     ├─ Grading (assignments, grades, submissions)
+│     ├─ Attendance (marking, tracking, reports)
+│     ├─ Schedule (class timing, timetable)
+│     ├─ Messages (parent communication)
+│     └─ Insights (AI analytics)
+│
+├─📂 admin/                         [Admin-Only Pages]
+│  ├─ 📄 index.js                  ← Export AdminDashboard
+│  └─ Scope: Role = "ADMIN"
+│
+├─📂 parent/                        [Parent-Only Pages]
+│  ├─ 📄 index.js                  ← Export ParentDashboard
+│  └─ Scope: Role = "PARENT"
+│
+├─📂 shared/                        [Multi-Role Pages]
+│  ├─ 📄 index.js                  ← Export MessagesPage, RoleHomePage
+│  └─ Scope: Multiple roles access
+│
+├─📄 STRUCTURE.md                   [Detailed documentation]
+│
+├─🎯 Individual Page Files (Stored at Root)
+│
+├─ 🔐 AUTHENTICATION PAGES
+│  ├─ HomePage.jsx                  ← Public landing page
+│  ├─ LoginPage.jsx                 ← Login form
+│  ├─ RegisterPage.jsx              ← Registration form
+│  └─ UnauthorizedPage.jsx          ← 403 error
+│
+├─ 👨‍🏫 TEACHER PAGES
+│  ├─ TeacherDashboard.jsx          ← Main dashboard (8 sections)
+│  ├─ StudentListPage.jsx           ← All students directory
+│  ├─ StudentDetailsPage.jsx        ← Student profile
+│  ├─ AssignmentsPage.jsx           ← Assignment management
+│  ├─ GradesPage.jsx                ← Grade book
+│  ├─ AttendancePage.jsx            ← Attendance tracker
+│  ├─ SchedulePage.jsx              ← Class schedule
+│  ├─ MessagesSectionPage.jsx       ← Messages interface
+│  └─ AIInsightsPage.jsx            ← AI analytics
+│
+├─ 🔧 ADMIN PAGES
+│  └─ AdminDashboard.jsx            ← Admin control panel
+│
+├─ 👨‍👩‍👧 PARENT PAGES
+│  └─ ParentDashboard.jsx           ← Parent home
+│
+└─ 🔄 SHARED PAGES
+   ├─ MessagesPage.jsx              ← Universal messaging
+   └─ RoleHomePage.jsx              ← Role selector
+
+═══════════════════════════════════════════════════════════════════
+
+📊 IMPORT PATTERN (Clean & Maintainable)
+
+From AppRouter.jsx:
+─────────────────────────────────────────────────────────────────
+import { HomePage, LoginPage } from "../pages/common";
+import { TeacherDashboard, StudentListPage } from "../pages/teacher";
+import { AdminDashboard } from "../pages/admin";
+import { ParentDashboard } from "../pages/parent";
+import { MessagesPage } from "../pages/shared";
+
+✓ Cleaner code
+✓ Better organization
+✓ Easier to scale
+✓ Clear separation of concerns
+
+═══════════════════════════════════════════════════════════════════
+
+🔄 ROUTING STRUCTURE
+
+Public Routes:
+  / → HomePage
+  /login → LoginPage
+  /register → RegisterPage
+  /unauthorized → UnauthorizedPage
+
+Teacher Routes (Protected):
+  /teacher → TeacherDashboard
+  /teacher/students → StudentListPage
+  /teacher/students/:id → StudentDetailsPage
+  /teacher/assignments → AssignmentsPage
+  /teacher/grades → GradesPage
+  /teacher/attendance → AttendancePage
+  /teacher/schedule → SchedulePage
+  /teacher/messages → MessagesSectionPage
+  /ai-insights → AIInsightsPage
+
+Admin Routes (Protected):
+  /admin → AdminDashboard
+
+Parent Routes (Protected):
+  /parent → ParentDashboard
+
+Shared Routes (Protected - Multi-role):
+  /messages → MessagesPage
+
+═══════════════════════════════════════════════════════════════════
