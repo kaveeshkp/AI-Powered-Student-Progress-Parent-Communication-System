@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { PATHS } from "../../routes/paths";
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,600;9..144,0,700;9..144,1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
@@ -532,29 +531,16 @@ const CSS = `
 
 function AdminDashboardEnhanced() {
   const { user, logout } = useAuth();
-  const location = useLocation();
+  const [activeNav, setActiveNav] = useState(0);
 
   const navItems = [
-    { icon: "⊞", label: "Overview", path: PATHS.ADMIN },
-    { icon: "👥", label: "Users", path: PATHS.ADMIN_USERS },
-    { icon: "🏫", label: "Institutions", path: PATHS.ADMIN_INSTITUTIONS },
-    { icon: "📊", label: "Reports", path: PATHS.ADMIN_REPORTS },
-    { icon: "🔒", label: "Security", path: PATHS.ADMIN_SECURITY },
-    { icon: "⚙️", label: "Settings", path: PATHS.ADMIN_SETTINGS },
+    { icon: "⊞", label: "Overview" },
+    { icon: "👥", label: "Users" },
+    { icon: "🏫", label: "Institutions" },
+    { icon: "📊", label: "Reports" },
+    { icon: "🔒", label: "Security" },
+    { icon: "⚙️", label: "Settings" },
   ];
-
-  // Determine active nav based on current location
-  const getActiveNavIndex = () => {
-    if (location.pathname === PATHS.ADMIN) return 0;
-    if (location.pathname === PATHS.ADMIN_USERS) return 1;
-    if (location.pathname === PATHS.ADMIN_INSTITUTIONS) return 2;
-    if (location.pathname === PATHS.ADMIN_REPORTS) return 3;
-    if (location.pathname === PATHS.ADMIN_SECURITY) return 4;
-    if (location.pathname === PATHS.ADMIN_SETTINGS) return 5;
-    return 0;
-  };
-
-  const activeNavIndex = getActiveNavIndex();
 
   const stats = [
     { icon: "👥", label: "Total Users", value: "1,284", trend: "+12% this month", type: "up" },
@@ -594,18 +580,14 @@ function AdminDashboardEnhanced() {
 
           <nav className="admin-nav">
             {navItems.map((item, idx) => (
-              <Link
+              <button
                 key={item.label}
-                to={item.path}
-                style={{ textDecoration: "none" }}
+                className={`admin-nav-item ${idx === activeNav ? "active" : ""}`}
+                onClick={() => setActiveNav(idx)}
               >
-                <button
-                  className={`admin-nav-item ${idx === activeNavIndex ? "active" : ""}`}
-                >
-                  <span className="admin-nav-icon">{item.icon}</span>
-                  <span>{item.label}</span>
-                </button>
-              </Link>
+                <span className="admin-nav-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
             ))}
           </nav>
 
@@ -692,9 +674,7 @@ function AdminDashboardEnhanced() {
                   </div>
                 </div>
                 <div className="section-action">
-                  <Link to={PATHS.ADMIN_USERS} style={{ textDecoration: 'none' }}>
-                    <button style={{ width: '100%' }}>Manage Users</button>
-                  </Link>
+                  <button>Manage Users</button>
                 </div>
               </div>
 

@@ -16,7 +16,12 @@ import {
   MessagesSectionPage,
   AIInsightsPage,
 } from "../pages/teacher";
-import { AdminDashboard } from "../pages/admin";
+import {
+  AdminDashboard,
+  AdminUsersPage,
+  AdminPlaceholderPage,
+} from "../pages/admin";
+import AdminDashboardPro from "../pages/admin/AdminDashboardPro";
 import { ParentDashboard } from "../pages/parent";
 import { MessagesPage } from "../pages/shared";
 import { useAuth } from "../context/AuthContext";
@@ -36,7 +41,12 @@ function AppRouter() {
       <Route path={PATHS.UNAUTHORIZED} element={<UnauthorizedPage />} />
 
       <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
-        <Route path={PATHS.ADMIN} element={<AdminDashboard />} />
+        <Route path={PATHS.ADMIN} element={<AdminDashboardPro />} />
+        <Route path={PATHS.ADMIN_USERS} element={<AdminUsersPage />} />
+        <Route path={PATHS.ADMIN_INSTITUTIONS} element={<AdminPlaceholderPage title="Institutions" icon="🏫" sectionName="institutions" />} />
+        <Route path={PATHS.ADMIN_REPORTS} element={<AdminPlaceholderPage title="Reports" icon="📊" sectionName="reports" />} />
+        <Route path={PATHS.ADMIN_SECURITY} element={<AdminPlaceholderPage title="Security" icon="🔒" sectionName="security" />} />
+        <Route path={PATHS.ADMIN_SETTINGS} element={<AdminPlaceholderPage title="Settings" icon="⚙️" sectionName="settings" />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["TEACHER"]} />}>
