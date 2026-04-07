@@ -135,7 +135,11 @@ function RegisterPage() {
       await new Promise((r) => setTimeout(r, 1000));
       navigate("/login", { replace: true });
     } catch (err) {
-      setError(err?.message || "Registration failed.");
+      const errorMessage = 
+        err?.message || 
+        (err?.status === 0 ? "Cannot connect to server. Please ensure the backend is running on http://localhost:8080" : "Registration failed");
+      setError(errorMessage);
+      console.error("Register error details:", err);
     } finally {
       setLoading(false);
     }

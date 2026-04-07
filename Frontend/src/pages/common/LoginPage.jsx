@@ -99,16 +99,30 @@ function LoginPage() {
     setError("");
 
     try {
+      // Validate inputs
+      if (!form.email || !form.password) {
+        setError("Please enter your email and password");
+        setLoading(false);
+        return;
+      }
+
       const response = await login(form);
       setSuccess(true);
       await new Promise((r) => setTimeout(r, 900));
-      const role = response.role;
+
+      // Handle both string and object role formats
+      const role = typeof response.role === 'object' ? response.role.name || response.role : response.role;
+
       if (role === "ADMIN") navigate("/admin", { replace: true });
       else if (role === "TEACHER") navigate("/teacher", { replace: true });
       else if (role === "PARENT") navigate("/parent", { replace: true });
-      else navigate("/login", { replace: true });
+      else navigate("/app", { replace: true }); // Default to app which will redirect based on role
     } catch (err) {
-      setError(err?.message || "Login failed.");
+      const errorMessage =
+        err?.message ||
+        (err?.status === 0 ? "Cannot connect to server. Please ensure the backend is running on http://localhost:8080" : "Invalid email or password");
+      setError(errorMessage);
+      console.error("Login error details:", err);
     } finally {
       setLoading(false);
     }

@@ -18,15 +18,31 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const errorData = error.response?.data;
+    
+    // Extract message from various possible error structures
+    let message = "Request failed";
+    
+    if (errorData?.message) {
+      message = errorData.message;
+    } else if (errorData?.error) {
+      message = typeof errorData.error === "string" ? errorData.error : errorData.error.message || "Request failed";
+    } else if (errorData?.errors) {
+      // Handle validation errors array
+      if (Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        message = errorData.errors.map(e => e.message || e.field || e).join(", ");
+      }
+    } else if (error.message) {
+      message = error.message;
+    }
+
     const normalizedError = {
       status: error.response?.status,
-      message:
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Request failed",
-      data: error.response?.data ?? null
+      message: message,
+      data: errorData ?? null
     };
+
+    console.error("[API Error]", { status: normalizedError.status, message: normalizedError.message, data: normalizedError.data });
 
     // Surface a consistent error shape to callers.
     return Promise.reject(normalizedError);

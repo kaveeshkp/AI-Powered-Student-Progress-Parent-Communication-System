@@ -60,15 +60,25 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (credentials) => {
-    const data = await loginRequest(credentials);
-    setSession(data.token, data);
-    return data;
+    try {
+      const data = await loginRequest(credentials);
+      setSession(data.token, data);
+      return data;
+    } catch (error) {
+      console.error("[Login Error]", error);
+      throw error;
+    }
   };
 
   const register = async (payload) => {
-    const data = await registerRequest(payload);
-    setSession(data.token, data);
-    return data;
+    try {
+      const data = await registerRequest(payload);
+      setSession(data.token, data);
+      return data;
+    } catch (error) {
+      console.error("[Register Error]", error);
+      throw error;
+    }
   };
 
   const logout = () => setSession(null);
