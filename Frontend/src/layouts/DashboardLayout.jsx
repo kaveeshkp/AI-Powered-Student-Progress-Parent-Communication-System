@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { PATHS } from "../routes/paths";
 
@@ -26,8 +26,14 @@ const baseLinks = [
 
 function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const role = user?.role || "";
+
+  const handleLogout = () => {
+    logout();
+    navigate(PATHS.LOGIN);
+  };
 
   const filteredLinks = links.filter((link) => !link.roles || link.roles.includes(role));
 
@@ -54,7 +60,7 @@ function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {
           <div className="flex items-center gap-3">
             <div className="hidden sm:block text-sm text-slate-300">{user?.fullName || user?.email}</div>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="rounded-lg bg-slate-800 px-3 py-2 text-sm font-medium text-slate-100 hover:bg-slate-700"
             >
               Logout

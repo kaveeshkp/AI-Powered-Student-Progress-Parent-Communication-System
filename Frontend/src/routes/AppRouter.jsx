@@ -24,6 +24,7 @@ import {
 import AdminDashboardPro from "../pages/admin/AdminDashboardPro";
 import { ParentDashboard } from "../pages/parent";
 import { MessagesPage } from "../pages/shared";
+import { StudentDashboard } from "../pages/student";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultPathByRole, PATHS } from "./paths";
 import ProtectedRoute from "./ProtectedRoute";
@@ -64,6 +65,10 @@ function AppRouter() {
       <Route element={<ProtectedRoute allowedRoles={["PARENT"]} />}>
         <Route path={PATHS.PARENT} element={<ParentDashboard />} />
         <Route path={`${PATHS.PARENT}/student/:id`} element={<StudentDetailsPage />} />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
+        <Route path={PATHS.STUDENT} element={<StudentDashboard />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={["ADMIN", "TEACHER", "PARENT"]} />}>

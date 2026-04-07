@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { PATHS } from "../../routes/paths";
 
@@ -575,7 +575,13 @@ const adminProStats = [
 const AdminDashboardPro = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState("overview");
+
+  const handleLogout = () => {
+    logout();
+    navigate(PATHS.LOGIN);
+  };
 
   const navItems = [
     { id: "overview", icon: "📊", label: "Overview", path: PATHS.ADMIN },
@@ -650,7 +656,7 @@ const AdminDashboardPro = () => {
               <div className="admin-pro-user-name">{user?.fullName || "Administrator"}</div>
               <div className="admin-pro-user-role">{user?.role || "ADMIN"}</div>
             </div>
-            <button className="admin-pro-logout" onClick={logout}>
+            <button className="admin-pro-logout" onClick={handleLogout}>
               Sign Out
             </button>
           </div>
