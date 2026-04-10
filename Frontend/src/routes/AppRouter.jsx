@@ -4,6 +4,7 @@ import {
   LoginPage,
   RegisterPage,
   UnauthorizedPage,
+  NotFoundPage,
 } from "../pages/common";
 import {
   TeacherDashboard,
@@ -23,8 +24,13 @@ import {
 } from "../pages/admin";
 import AdminDashboardPro from "../pages/admin/AdminDashboardPro";
 import { ParentDashboard } from "../pages/parent";
+import {
+  StudentDashboard,
+  StudentAssignmentsPage,
+  StudentGradesPage,
+  StudentSchedulePage,
+} from "../pages/student";
 import { MessagesPage } from "../pages/shared";
-import { StudentDashboard } from "../pages/student";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultPathByRole, PATHS } from "./paths";
 import ProtectedRoute from "./ProtectedRoute";
@@ -58,7 +64,6 @@ function AppRouter() {
         <Route path={PATHS.TEACHER_GRADES} element={<GradesPage />} />
         <Route path={PATHS.TEACHER_ATTENDANCE} element={<AttendancePage />} />
         <Route path={PATHS.TEACHER_SCHEDULE} element={<SchedulePage />} />
-        <Route path={PATHS.TEACHER_MESSAGES} element={<MessagesSectionPage />} />
         <Route path={PATHS.AI_INSIGHTS} element={<AIInsightsPage />} />
       </Route>
 
@@ -69,13 +74,17 @@ function AppRouter() {
 
       <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
         <Route path={PATHS.STUDENT} element={<StudentDashboard />} />
+        <Route path={PATHS.STUDENT_ASSIGNMENTS} element={<StudentAssignmentsPage />} />
+        <Route path={PATHS.STUDENT_GRADES} element={<StudentGradesPage />} />
+        <Route path={PATHS.STUDENT_SCHEDULE} element={<StudentSchedulePage />} />
       </Route>
 
-      <Route element={<ProtectedRoute allowedRoles={["ADMIN", "TEACHER", "PARENT"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["ADMIN", "TEACHER", "PARENT", "STUDENT"]} />}>
         <Route path={PATHS.MESSAGES} element={<MessagesPage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to={PATHS.HOME} replace />} />
+      <Route path={PATHS.NOT_FOUND} element={<NotFoundPage />} />
+      <Route path="*" element={<Navigate to={PATHS.NOT_FOUND} replace />} />
     </Routes>
   );
 }

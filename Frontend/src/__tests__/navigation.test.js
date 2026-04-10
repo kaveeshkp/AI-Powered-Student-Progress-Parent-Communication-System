@@ -28,11 +28,13 @@ describe('Navigation & Routing', () => {
       expect(PATHS.TEACHER_GRADES).toBe('/teacher/grades');
       expect(PATHS.TEACHER_ATTENDANCE).toBe('/teacher/attendance');
       expect(PATHS.TEACHER_SCHEDULE).toBe('/teacher/schedule');
-      expect(PATHS.TEACHER_MESSAGES).toBe('/teacher/messages');
     });
 
-    it('should have all required parent paths', () => {
-      expect(PATHS.PARENT).toBe('/parent');
+    it('should have all required student paths', () => {
+      expect(PATHS.STUDENT).toBe('/student');
+      expect(PATHS.STUDENT_ASSIGNMENTS).toBe('/student/assignments');
+      expect(PATHS.STUDENT_GRADES).toBe('/student/grades');
+      expect(PATHS.STUDENT_SCHEDULE).toBe('/student/schedule');
     });
 
     it('should have dynamic path functions', () => {
@@ -74,10 +76,13 @@ describe('Navigation & Routing', () => {
       { to: PATHS.TEACHER_GRADES, label: 'Grades', icon: '📊', roles: ['TEACHER'] },
       { to: PATHS.TEACHER_ATTENDANCE, label: 'Attendance', icon: '✅', roles: ['TEACHER'] },
       { to: PATHS.TEACHER_SCHEDULE, label: 'Schedule', icon: '🗓️', roles: ['TEACHER'] },
-      { to: PATHS.TEACHER_MESSAGES, label: 'Messages', icon: '💬', roles: ['TEACHER'] },
       { to: PATHS.AI_INSIGHTS, label: 'AI Insights', icon: '🤖', roles: ['TEACHER'] },
       { to: PATHS.PARENT, label: 'Dashboard', icon: '⊞', roles: ['PARENT'] },
-      { to: PATHS.MESSAGES, label: 'Messages', icon: '💬', roles: ['PARENT', 'ADMIN'] }
+      { to: PATHS.STUDENT, label: 'Overview', icon: '⊞', roles: ['STUDENT'] },
+      { to: PATHS.STUDENT_ASSIGNMENTS, label: 'Assignments', icon: '📋', roles: ['STUDENT'] },
+      { to: PATHS.STUDENT_GRADES, label: 'Grades', icon: '📊', roles: ['STUDENT'] },
+      { to: PATHS.STUDENT_SCHEDULE, label: 'Schedule', icon: '🗓️', roles: ['STUDENT'] },
+      { to: PATHS.MESSAGES, label: 'Messages', icon: '💬', roles: ['ADMIN', 'TEACHER', 'PARENT', 'STUDENT'] }
     ];
 
     it('should show only admin links for ADMIN role', () => {

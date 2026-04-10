@@ -14,14 +14,19 @@ const baseLinks = [
   { to: PATHS.TEACHER_GRADES, label: "Grades", icon: "📊", roles: ["TEACHER"] },
   { to: PATHS.TEACHER_ATTENDANCE, label: "Attendance", icon: "✅", roles: ["TEACHER"] },
   { to: PATHS.TEACHER_SCHEDULE, label: "Schedule", icon: "🗓️", roles: ["TEACHER"] },
-  { to: PATHS.TEACHER_MESSAGES, label: "Messages", icon: "💬", roles: ["TEACHER"] },
   { to: PATHS.AI_INSIGHTS, label: "AI Insights", icon: "🤖", roles: ["TEACHER"] },
   
   // Parent
   { to: PATHS.PARENT, label: "Dashboard", icon: "⊞", roles: ["PARENT"] },
   
-  // Shared
-  { to: PATHS.MESSAGES, label: "Messages", icon: "💬", roles: ["PARENT", "ADMIN"] }
+  // Student
+  { to: PATHS.STUDENT, label: "Overview", icon: "⊞", roles: ["STUDENT"] },
+  { to: PATHS.STUDENT_ASSIGNMENTS, label: "Assignments", icon: "📋", roles: ["STUDENT"] },
+  { to: PATHS.STUDENT_GRADES, label: "Grades", icon: "📊", roles: ["STUDENT"] },
+  { to: PATHS.STUDENT_SCHEDULE, label: "Schedule", icon: "🗓️", roles: ["STUDENT"] },
+  
+  // Shared (All authenticated users)
+  { to: PATHS.MESSAGES, label: "Messages", icon: "💬", roles: ["ADMIN", "TEACHER", "PARENT", "STUDENT"] }
 ];
 
 function DashboardLayout({ children, links = baseLinks, title = "Dashboard" }) {

@@ -373,7 +373,7 @@ const NAV = [
   { label: "Assignments", icon: "📋", to: "/teacher/assignments" },
   { label: "Grades",      icon: "📊", to: "/teacher/grades" },
   { label: "Attendance",  icon: "✅", to: "/teacher/attendance" },
-  { label: "Messages",    icon: "💬", to: PATHS.TEACHER_MESSAGES },
+  { label: "Messages",    icon: "💬", to: PATHS.MESSAGES },
   { label: "AI Insights", icon: "🤖", to: PATHS.AI_INSIGHTS },
   { label: "Schedule",    icon: "🗓️", to: "/teacher/schedule" },
 ];
@@ -605,7 +605,7 @@ function TeacherDashboard() {
                   </Link>
                 </RoleGate>
                 <RoleGate allowedRoles={["TEACHER"]}>
-                  <Link to={PATHS.TEACHER_MESSAGES} className="btn-ghost">Open Messages</Link>
+                  <Link to={PATHS.MESSAGES} className="btn-ghost">Open Messages</Link>
                 </RoleGate>
               </div>
             </div>
@@ -684,7 +684,7 @@ function TeacherDashboard() {
                 <SectionCard eyebrow="Actions" title="Quick Actions" desc="Jump into your most-used workflows." delay="0.4s">
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
                     {[
-                      { to: PATHS.TEACHER_MESSAGES, icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
+                      { to: PATHS.MESSAGES, icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
                       { to: PATHS.AI_INSIGHTS, icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
                       { to: "/teacher/grades",      icon: "📊", title: "Grade Book",      sub: "Enter and manage marks" },
                       { to: "/teacher/attendance",  icon: "✅", title: "Attendance",      sub: "Mark and review presence" },

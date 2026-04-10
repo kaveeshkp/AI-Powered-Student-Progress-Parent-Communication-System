@@ -5,6 +5,7 @@ const PATHS = {
   LOGIN: "/login",
   REGISTER: "/register",
   UNAUTHORIZED: "/unauthorized",
+  NOT_FOUND: "/404",
   MESSAGES: "/messages",
   AI_INSIGHTS: "/ai-insights",
   ADMIN: "/admin",
@@ -20,10 +21,12 @@ const PATHS = {
   TEACHER_GRADES: "/teacher/grades",
   TEACHER_ATTENDANCE: "/teacher/attendance",
   TEACHER_SCHEDULE: "/teacher/schedule",
-  TEACHER_MESSAGES: "/teacher/messages",
   PARENT: "/parent",
   PARENT_STUDENT_DETAIL: (id) => `/parent/student/${id}`,
-  STUDENT: "/student"
+  STUDENT: "/student",
+  STUDENT_ASSIGNMENTS: "/student/assignments",
+  STUDENT_GRADES: "/student/grades",
+  STUDENT_SCHEDULE: "/student/schedule"
 };
 
 console.log("✓ Navigation Path Verification\n");
