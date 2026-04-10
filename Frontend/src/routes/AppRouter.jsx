@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultPathByRole, PATHS } from "./paths";
 import ProtectedRoute from "./ProtectedRoute";
+import RouteErrorBoundary from "../components/RouteErrorBoundary";
 
 // Lazy load all page components for code splitting
 const HomePage = lazy(() => import("../pages/common/HomePage"));
@@ -85,16 +86,42 @@ function AppRouter() {
         <Route path={PATHS.REGISTER} element={<RegisterPage />} />
         <Route path={PATHS.UNAUTHORIZED} element={<UnauthorizedPage />} />
 
-        <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+        {/* Admin Routes */}
+        <Route
+          element={
+            <RouteErrorBoundary>
+              <ProtectedRoute allowedRoles={["ADMIN"]} />
+            </RouteErrorBoundary>
+          }
+        >
           <Route path={PATHS.ADMIN} element={<AdminDashboardPro />} />
           <Route path={PATHS.ADMIN_USERS} element={<AdminUsersPage />} />
-          <Route path={PATHS.ADMIN_INSTITUTIONS} element={<AdminPlaceholderPage title="Institutions" icon="🏫" sectionName="institutions" />} />
-          <Route path={PATHS.ADMIN_REPORTS} element={<AdminPlaceholderPage title="Reports" icon="📊" sectionName="reports" />} />
-          <Route path={PATHS.ADMIN_SECURITY} element={<AdminPlaceholderPage title="Security" icon="🔒" sectionName="security" />} />
-          <Route path={PATHS.ADMIN_SETTINGS} element={<AdminPlaceholderPage title="Settings" icon="⚙️" sectionName="settings" />} />
+          <Route
+            path={PATHS.ADMIN_INSTITUTIONS}
+            element={<AdminPlaceholderPage title="Institutions" icon="🏫" sectionName="institutions" />}
+          />
+          <Route
+            path={PATHS.ADMIN_REPORTS}
+            element={<AdminPlaceholderPage title="Reports" icon="📊" sectionName="reports" />}
+          />
+          <Route
+            path={PATHS.ADMIN_SECURITY}
+            element={<AdminPlaceholderPage title="Security" icon="🔒" sectionName="security" />}
+          />
+          <Route
+            path={PATHS.ADMIN_SETTINGS}
+            element={<AdminPlaceholderPage title="Settings" icon="⚙️" sectionName="settings" />}
+          />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={["TEACHER"]} />}>
+        {/* Teacher Routes */}
+        <Route
+          element={
+            <RouteErrorBoundary>
+              <ProtectedRoute allowedRoles={["TEACHER"]} />
+            </RouteErrorBoundary>
+          }
+        >
           <Route path={PATHS.TEACHER} element={<TeacherDashboard />} />
           <Route path={PATHS.TEACHER_STUDENTS} element={<StudentListPage />} />
           <Route path={`${PATHS.TEACHER}/students/:studentId`} element={<StudentDetailsPage />} />
@@ -105,22 +132,44 @@ function AppRouter() {
           <Route path={PATHS.AI_INSIGHTS} element={<AIInsightsPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={["PARENT"]} />}>
+        {/* Parent Routes */}
+        <Route
+          element={
+            <RouteErrorBoundary>
+              <ProtectedRoute allowedRoles={["PARENT"]} />
+            </RouteErrorBoundary>
+          }
+        >
           <Route path={PATHS.PARENT} element={<ParentDashboard />} />
           <Route path={`${PATHS.PARENT}/student/:id`} element={<StudentDetailsPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
+        {/* Student Routes */}
+        <Route
+          element={
+            <RouteErrorBoundary>
+              <ProtectedRoute allowedRoles={["STUDENT"]} />
+            </RouteErrorBoundary>
+          }
+        >
           <Route path={PATHS.STUDENT} element={<StudentDashboard />} />
           <Route path={PATHS.STUDENT_ASSIGNMENTS} element={<StudentAssignmentsPage />} />
           <Route path={PATHS.STUDENT_GRADES} element={<StudentGradesPage />} />
           <Route path={PATHS.STUDENT_SCHEDULE} element={<StudentSchedulePage />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={["ADMIN", "TEACHER", "PARENT", "STUDENT"]} />}>
+        {/* Shared Routes */}
+        <Route
+          element={
+            <RouteErrorBoundary>
+              <ProtectedRoute allowedRoles={["ADMIN", "TEACHER", "PARENT", "STUDENT"]} />
+            </RouteErrorBoundary>
+          }
+        >
           <Route path={PATHS.MESSAGES} element={<MessagesPage />} />
         </Route>
 
+        {/* Catch-all Routes */}
         <Route path={PATHS.NOT_FOUND} element={<NotFoundPage />} />
         <Route path="*" element={<Navigate to={PATHS.NOT_FOUND} replace />} />
       </Routes>
