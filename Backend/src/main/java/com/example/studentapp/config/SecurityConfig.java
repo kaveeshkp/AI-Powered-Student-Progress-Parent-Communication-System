@@ -17,6 +17,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Security configuration for the application.
+ * 
+ * Features:
+ * - JWT authentication via JwtAuthenticationFilter
+ * - Rate limiting on auth endpoints (Bucket4j)
+ * - HTTPS/TLS enforcement (configurable)
+ * - CSRF disabled (stateless JWT auth)
+ * - Stateless session management
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -24,10 +34,17 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
+    private final RateLimitingFilter rateLimitingFilter;
+    private final SecurityProperties securityProperties;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, 
+                         UserDetailsService userDetailsService,
+                         RateLimitingFilter rateLimitingFilter,
+                         SecurityProperties securityProperties) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
+        this.rateLimitingFilter = rateLimitingFilter;
+        this.securityProperties = securityProperties;
     }
 
     @Bean
@@ -41,8 +58,30 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/health").permitAll()
                         .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+        
+        // Add HTTPS enforcement if enabled in production
+        if (securityProperties.isEnforceHttps()) {
+            http.requiresChannel(channel -> channel
+                    .anyRequest()
+                    .requiresSecure()
+            );
+        }
+        
+        // Add HSTS header if enabled
+        if (securityProperties.isEnableHsts()) {
+            http.headers(headers -> headers
+                    .httpStrictTransportSecurity()
+                    .maxAgeInSeconds(securityProperties.getHstsMaxAge())
+                    .includeSubDomains(securityProperties.isHstsIncludeSubdomains())
+            );
+        }
+        
+        // Add rate limiting filter before authentication
+        http.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class);
+        
+        // Add JWT filter
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
