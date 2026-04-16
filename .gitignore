@@ -1,0 +1,19 @@
+# Backend (Maven/Java)
+Backend/target/
+Backend/logs/
+
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/build-output.txt
+
+# Runtime logs
+logs/
+*.log
+
+# Temporary tool output
+.github/java-upgrade/
+
+# OS/editor artifacts
+.DS_Store
+Thumbs.db

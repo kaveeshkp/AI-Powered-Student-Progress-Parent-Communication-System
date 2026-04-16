@@ -1,14 +1,16 @@
 package com.example.studentapp.config;
 
+import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Component;
+
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
-import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 /**
  * Rate limiting configuration for protecting authentication endpoints.
@@ -89,6 +91,7 @@ public class RateLimitingConfig {
         if (bucket == null) {
             return 5; // Default if no bucket exists
         }
-        return bucket.estimateAbilityToConsume(1).getRoundedSecondsToWait();
+        // Check if request can be consumed; return capacity if yes, 0 if no
+        return bucket.estimateAbilityToConsume(1).canBeConsumed() ? 5 : 0;
     }
 }
