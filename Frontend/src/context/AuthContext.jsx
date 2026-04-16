@@ -4,10 +4,7 @@ import { decodeJwt } from "../utils/jwt";
 
 const AuthContext = createContext(null);
 const STORAGE_KEY = "authToken";
-const DEV_MODE = true; // Set to false to disable dev mode
-
-// Mock token for development testing
-const MOCK_DEV_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1MDAwIiwiZnVsbE5hbWUiOiJBZG1pbiBVc2VyIiwic3ViIjoiYWRtaW5AZGV2LnRlc3QiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE0MjI3NzU5MjR9.DhO1-ECKLqbPSMF-7GRt5j5PXLM2H35HG7B_qj3Wm5E";
+const DEV_MODE = false; // ✅ DISABLED - Users must login now!
 
 function parseToken(token) {
   if (!token) return null;
@@ -32,19 +29,12 @@ function buildUser(token, fallback = {}) {
 }
 
 export function AuthProvider({ children }) {
-  // Check for stored token or use dev mode token
-  let existingToken = localStorage.getItem(STORAGE_KEY);
-  
-  // Enable dev mode with mock admin user
-  if (DEV_MODE && !existingToken) {
-    existingToken = MOCK_DEV_TOKEN;
-    localStorage.setItem(STORAGE_KEY, existingToken);
-    console.log("✅ Development mode: Mock admin user token set");
-  }
+  // Check for stored token
+  const existingToken = localStorage.getItem(STORAGE_KEY);
 
   const [token, setToken] = useState(existingToken);
   const [user, setUser] = useState(existingToken ? buildUser(existingToken) : null);
-  
+
   console.log("🔐 Auth initialized - User:", user, "Token present:", !!token);
 
   const setSession = (nextToken, metadata = {}) => {

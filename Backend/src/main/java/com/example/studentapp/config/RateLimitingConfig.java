@@ -66,6 +66,7 @@ public class RateLimitingConfig {
     /**
      * Create bucket for auth endpoints: 5 requests per minute
      */
+    @SuppressWarnings("deprecation")
     private Bucket createAuthEndpointBucket() {
         Bandwidth limit = Bandwidth.classic(5, Refill.intervally(5, Duration.ofMinutes(1)));
         return Bucket4j.builder()
@@ -76,6 +77,7 @@ public class RateLimitingConfig {
     /**
      * Create bucket for login failures: 3 attempts per minute
      */
+    @SuppressWarnings("deprecation")
     private Bucket createLoginFailureBucket() {
         Bandwidth limit = Bandwidth.classic(3, Refill.intervally(3, Duration.ofMinutes(1)));
         return Bucket4j.builder()

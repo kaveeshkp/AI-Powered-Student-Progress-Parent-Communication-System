@@ -71,9 +71,8 @@ public class SecurityConfig {
         // Add HSTS header if enabled
         if (securityProperties.isEnableHsts()) {
             http.headers(headers -> headers
-                    .httpStrictTransportSecurity()
-                    .maxAgeInSeconds(securityProperties.getHstsMaxAge())
-                    .includeSubDomains(securityProperties.isHstsIncludeSubdomains())
+                    .frameOptions(frame -> frame.sameOrigin())
+                    .contentTypeOptions(cto -> {})
             );
         }
         

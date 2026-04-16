@@ -2,6 +2,8 @@ package com.example.studentapp.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,14 +12,23 @@ import com.example.studentapp.entity.Message;
 
 /**
  * Repository for Message entity.
- * 
+ *
  * Note on fetch strategies:
  * - Message has @ManyToOne with User (sender and receiver, both LAZY)
  * - Use @Query with FETCH JOIN when User data is needed
  * - Query methods that access sender/receiver will trigger N+1 without fetch joins
  */
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    
+
+    /**
+     * Find messages received by a user (paginated).
+     * Prevents N+1: avoids repeated user queries for sender/receiver
+     */
+    @Query("SELECT m FROM Message m " +
+           "LEFT JOIN FETCH m.sender " +
+           "WHERE m.receiver.id = :receiverId")
+    Page<Message> findByReceiverId(@Param("receiverId") Long receiverId, Pageable pageable);
+
     /**
      * Find messages between users with user information.
      * Prevents N+1: avoids repeated user queries for sender/receiver
