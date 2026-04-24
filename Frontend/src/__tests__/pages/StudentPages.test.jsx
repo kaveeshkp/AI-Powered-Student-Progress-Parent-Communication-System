@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { StudentAssignmentsPage } from '../../pages/student/StudentAssignmentsPage';
-import { StudentGradesPage } from '../../pages/student/StudentGradesPage';
-import { StudentSchedulePage } from '../../pages/student/StudentSchedulePage';
+import StudentAssignmentsPage from '../../pages/student/StudentAssignmentsPage';
+import StudentGradesPage from '../../pages/student/StudentGradesPage';
+import StudentSchedulePage from '../../pages/student/StudentSchedulePage';
 import { AuthProvider } from '../../context/AuthContext';
 
 const renderWithProviders = (component) => {

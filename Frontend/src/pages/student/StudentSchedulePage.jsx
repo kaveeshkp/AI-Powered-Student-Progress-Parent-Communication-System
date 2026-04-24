@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { PATHS } from "../../routes/paths";
 
-export function StudentSchedulePage() {
+export default function StudentSchedulePage() {
   // Mock data - replace with API call
   const schedule = [
     {
