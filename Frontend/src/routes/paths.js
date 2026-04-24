@@ -7,8 +7,7 @@ export const PATHS = {
   UNAUTHORIZED: "/unauthorized",
   NOT_FOUND: "/404",
   MESSAGES: "/messages",
-  AI_INSIGHTS: "/ai-insights",
-  
+
   // Admin
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
@@ -16,7 +15,7 @@ export const PATHS = {
   ADMIN_REPORTS: "/admin/reports",
   ADMIN_SECURITY: "/admin/security",
   ADMIN_SETTINGS: "/admin/settings",
-  
+
   // Teacher
   TEACHER: "/teacher",
   TEACHER_STUDENTS: "/teacher/students",
@@ -25,11 +24,12 @@ export const PATHS = {
   TEACHER_GRADES: "/teacher/grades",
   TEACHER_ATTENDANCE: "/teacher/attendance",
   TEACHER_SCHEDULE: "/teacher/schedule",
-  
+  TEACHER_AI_INSIGHTS: "/teacher/ai-insights",
+
   // Parent
   PARENT: "/parent",
   PARENT_STUDENT_DETAIL: (id) => `/parent/student/${id}`,
-  
+
   // Student
   STUDENT: "/student",
   STUDENT_ASSIGNMENTS: "/student/assignments",

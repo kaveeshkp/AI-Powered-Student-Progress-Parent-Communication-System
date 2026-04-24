@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getStudents } from "../../services/studentService";
 import { PATHS } from "../../routes/paths";
@@ -368,14 +368,14 @@ const CSS = `
 
 /* ─── NAV ITEMS ───────────────────────────────────────────────────────── */
 const NAV = [
-  { label: "Overview",    icon: "⊞", to: "/teacher" },
-  { label: "Students",    icon: "👥", to: "/teacher/students" },
-  { label: "Assignments", icon: "📋", to: "/teacher/assignments" },
-  { label: "Grades",      icon: "📊", to: "/teacher/grades" },
-  { label: "Attendance",  icon: "✅", to: "/teacher/attendance" },
+  { label: "Overview",    icon: "⊞", to: PATHS.TEACHER },
+  { label: "Students",    icon: "👥", to: PATHS.TEACHER_STUDENTS },
+  { label: "Assignments", icon: "📋", to: PATHS.TEACHER_ASSIGNMENTS },
+  { label: "Grades",      icon: "📊", to: PATHS.TEACHER_GRADES },
+  { label: "Attendance",  icon: "✅", to: PATHS.TEACHER_ATTENDANCE },
   { label: "Messages",    icon: "💬", to: PATHS.MESSAGES },
-  { label: "AI Insights", icon: "🤖", to: PATHS.AI_INSIGHTS },
-  { label: "Schedule",    icon: "🗓️", to: "/teacher/schedule" },
+  { label: "AI Insights", icon: "🤖", to: PATHS.TEACHER_AI_INSIGHTS },
+  { label: "Schedule",    icon: "🗓️", to: PATHS.TEACHER_SCHEDULE },
 ];
 
 /* ─── UTILS ───────────────────────────────────────────────────────────── */
@@ -453,7 +453,6 @@ function TeacherDashboard() {
   const [error, setError]         = useState("");
   const [summary, setSummary]     = useState({ totalStudents: 0, averageGrade: "—", averageAttendance: "—" });
   const [collapsed, setCollapsed] = useState(false);
-  const [activeNav, setActiveNav] = useState(0);
   const [profileOpen, setProfileOpen] = useState(false);
 
   const loadStudents = async (mountRef) => {
@@ -512,16 +511,17 @@ function TeacherDashboard() {
 
           <span className="sb-section-label">Navigation</span>
 
-          {NAV.map((item, i) => (
-            <Link
+          {NAV.map((item) => (
+            <NavLink
               key={item.label}
               to={item.to}
-              className={`sb-nav-item ${activeNav === i ? "active" : ""}`}
-              onClick={() => setActiveNav(i)}
+              className={({ isActive }) =>
+                `sb-nav-item ${isActive ? "active" : ""}`
+              }
             >
               <span className="sb-nav-icon">{item.icon}</span>
               <span className="sb-nav-label">{item.label}</span>
-            </Link>
+            </NavLink>
           ))}
 
           <div className="sb-footer">
@@ -599,7 +599,7 @@ function TeacherDashboard() {
               </p>
               <div className="hero-actions">
                 <RoleGate allowedRoles={["TEACHER"]}>
-                  <Link to={PATHS.AI_INSIGHTS} className="btn-primary">
+                  <Link to={PATHS.TEACHER_AI_INSIGHTS} className="btn-primary">
                     View AI Insights
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </Link>
@@ -685,9 +685,9 @@ function TeacherDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
                     {[
                       { to: PATHS.MESSAGES, icon: "💬", title: "Open Messages",    sub: "Reply to parents and students" },
-                      { to: PATHS.AI_INSIGHTS, icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
-                      { to: "/teacher/grades",      icon: "📊", title: "Grade Book",      sub: "Enter and manage marks" },
-                      { to: "/teacher/attendance",  icon: "✅", title: "Attendance",      sub: "Mark and review presence" },
+                      { to: PATHS.TEACHER_AI_INSIGHTS, icon: "🤖", title: "AI Insights",      sub: "Review performance suggestions" },
+                      { to: PATHS.TEACHER_GRADES,      icon: "📊", title: "Grade Book",      sub: "Enter and manage marks" },
+                      { to: PATHS.TEACHER_ATTENDANCE,  icon: "✅", title: "Attendance",      sub: "Mark and review presence" },
                     ].map((a) => (
                       <Link key={a.to} to={a.to} className="action-btn">
                         <div className="action-icon">{a.icon}</div>

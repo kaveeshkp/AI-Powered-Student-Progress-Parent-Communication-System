@@ -14,7 +14,7 @@ const baseLinks = [
   { to: PATHS.TEACHER_GRADES, label: "Grades", icon: "📊", roles: ["TEACHER"] },
   { to: PATHS.TEACHER_ATTENDANCE, label: "Attendance", icon: "✅", roles: ["TEACHER"] },
   { to: PATHS.TEACHER_SCHEDULE, label: "Schedule", icon: "🗓️", roles: ["TEACHER"] },
-  { to: PATHS.AI_INSIGHTS, label: "AI Insights", icon: "🤖", roles: ["TEACHER"] },
+  { to: PATHS.TEACHER_AI_INSIGHTS, label: "AI Insights", icon: "🤖", roles: ["TEACHER"] },
   
   // Parent
   { to: PATHS.PARENT, label: "Dashboard", icon: "⊞", roles: ["PARENT"] },

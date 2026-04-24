@@ -9,7 +9,6 @@ describe('Navigation & Routing', () => {
       expect(PATHS.REGISTER).toBe('/register');
       expect(PATHS.UNAUTHORIZED).toBe('/unauthorized');
       expect(PATHS.MESSAGES).toBe('/messages');
-      expect(PATHS.AI_INSIGHTS).toBe('/ai-insights');
     });
 
     it('should have all required admin paths', () => {
@@ -28,6 +27,7 @@ describe('Navigation & Routing', () => {
       expect(PATHS.TEACHER_GRADES).toBe('/teacher/grades');
       expect(PATHS.TEACHER_ATTENDANCE).toBe('/teacher/attendance');
       expect(PATHS.TEACHER_SCHEDULE).toBe('/teacher/schedule');
+      expect(PATHS.TEACHER_AI_INSIGHTS).toBe('/teacher/ai-insights');
     });
 
     it('should have all required student paths', () => {
@@ -76,7 +76,7 @@ describe('Navigation & Routing', () => {
       { to: PATHS.TEACHER_GRADES, label: 'Grades', icon: '📊', roles: ['TEACHER'] },
       { to: PATHS.TEACHER_ATTENDANCE, label: 'Attendance', icon: '✅', roles: ['TEACHER'] },
       { to: PATHS.TEACHER_SCHEDULE, label: 'Schedule', icon: '🗓️', roles: ['TEACHER'] },
-      { to: PATHS.AI_INSIGHTS, label: 'AI Insights', icon: '🤖', roles: ['TEACHER'] },
+      { to: PATHS.TEACHER_AI_INSIGHTS, label: 'AI Insights', icon: '🤖', roles: ['TEACHER'] },
       { to: PATHS.PARENT, label: 'Dashboard', icon: '⊞', roles: ['PARENT'] },
       { to: PATHS.STUDENT, label: 'Overview', icon: '⊞', roles: ['STUDENT'] },
       { to: PATHS.STUDENT_ASSIGNMENTS, label: 'Assignments', icon: '📋', roles: ['STUDENT'] },
@@ -94,10 +94,10 @@ describe('Navigation & Routing', () => {
 
     it('should show only teacher links for TEACHER role', () => {
       const teacherLinks = baseLinks.filter((link) => !link.roles || link.roles.includes('TEACHER'));
-      expect(teacherLinks.length).toBe(9);
+      expect(teacherLinks.length).toBe(8);
       expect(teacherLinks.map(l => l.to)).toContain(PATHS.TEACHER);
       expect(teacherLinks.map(l => l.to)).toContain(PATHS.TEACHER_STUDENTS);
-      expect(teacherLinks.map(l => l.to)).toContain(PATHS.AI_INSIGHTS);
+      expect(teacherLinks.map(l => l.to)).toContain(PATHS.TEACHER_AI_INSIGHTS);
     });
 
     it('should show only parent links for PARENT role', () => {

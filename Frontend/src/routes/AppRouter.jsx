@@ -25,7 +25,6 @@ const AssignmentsPage = lazy(() => import("../pages/teacher/AssignmentsPage"));
 const GradesPage = lazy(() => import("../pages/teacher/GradesPage"));
 const AttendancePage = lazy(() => import("../pages/teacher/AttendancePage"));
 const SchedulePage = lazy(() => import("../pages/teacher/SchedulePage"));
-const MessagesSectionPage = lazy(() => import("../pages/teacher/MessagesSectionPage"));
 const AIInsightsPage = lazy(() => import("../pages/teacher/AIInsightsPage"));
 
 // Parent pages
@@ -129,7 +128,7 @@ function AppRouter() {
           <Route path={PATHS.TEACHER_GRADES} element={<GradesPage />} />
           <Route path={PATHS.TEACHER_ATTENDANCE} element={<AttendancePage />} />
           <Route path={PATHS.TEACHER_SCHEDULE} element={<SchedulePage />} />
-          <Route path={PATHS.AI_INSIGHTS} element={<AIInsightsPage />} />
+          <Route path={PATHS.TEACHER_AI_INSIGHTS} element={<AIInsightsPage />} />
         </Route>
 
         {/* Parent Routes */}

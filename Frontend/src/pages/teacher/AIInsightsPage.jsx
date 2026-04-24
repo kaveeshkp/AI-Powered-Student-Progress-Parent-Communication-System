@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { PATHS } from "../../routes/paths";
 import { getClassInsights } from "../../services/aiService";
 import RoleGate from "../../routes/RoleGate";
 
@@ -204,14 +205,14 @@ const CSS = `
 
 /* ─── NAV ─────────────────────────────────────────────────────────────── */
 const NAV = [
-  { label:"Overview",    icon:"⊞", to:"/teacher" },
-  { label:"Students",    icon:"👥", to:"/teacher/students" },
-  { label:"Assignments", icon:"📋", to:"/teacher/assignments" },
-  { label:"Grades",      icon:"📊", to:"/teacher/grades" },
-  { label:"Attendance",  icon:"✅", to:"/teacher/attendance" },
-  { label:"Messages",    icon:"💬", to:"/messages" },
-  { label:"AI Insights", icon:"🤖", to:"/ai-insights" },
-  { label:"Schedule",    icon:"🗓️", to:"/teacher/schedule" },
+  { label:"Overview",    icon:"⊞", to:PATHS.TEACHER },
+  { label:"Students",    icon:"👥", to:PATHS.TEACHER_STUDENTS },
+  { label:"Assignments", icon:"📋", to:PATHS.TEACHER_ASSIGNMENTS },
+  { label:"Grades",      icon:"📊", to:PATHS.TEACHER_GRADES },
+  { label:"Attendance",  icon:"✅", to:PATHS.TEACHER_ATTENDANCE },
+  { label:"Messages",    icon:"💬", to:PATHS.MESSAGES },
+  { label:"AI Insights", icon:"🤖", to:PATHS.TEACHER_AI_INSIGHTS },
+  { label:"Schedule",    icon:"🗓️", to:PATHS.TEACHER_SCHEDULE },
 ];
 
 const initials = (s = "") => s.split(" ").map((w) => w[0]).join("").slice(0,2).toUpperCase() || "T";
