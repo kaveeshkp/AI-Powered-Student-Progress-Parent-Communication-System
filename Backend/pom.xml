@@ -132,6 +132,11 @@
             <version>2.35.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Email support for password reset -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

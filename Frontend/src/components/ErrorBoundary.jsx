@@ -65,7 +65,9 @@ class ErrorBoundary extends Component {
       errors.push(errorData);
       localStorage.setItem('appErrors', JSON.stringify(errors.slice(-10))); // Keep last 10
     } catch (e) {
-      console.error('Failed to log error:', e);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to log error:', e);
+      }
     }
   };
 

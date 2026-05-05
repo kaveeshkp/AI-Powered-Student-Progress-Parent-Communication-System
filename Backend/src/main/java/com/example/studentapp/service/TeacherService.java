@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 /**
  * Service for Teacher business logic.
@@ -74,8 +76,11 @@ public class TeacherService {
         User user = new User();
         user.setFullName(request.fullName());
         user.setEmail(request.email());
-        user.setPassword(passwordEncoder.encode("TempPassword123!")); // TODO: Send password via email
+        String tempPassword = generateTempPassword();
+        user.setPassword(passwordEncoder.encode(tempPassword));
         user.setRole(RoleType.TEACHER);
+        // TODO: Send tempPassword via email to user.email()
+        // emailService.sendPasswordResetEmail(user.getEmail(), tempPassword);
         User savedUser = userRepository.save(user);
 
         // Create teacher entity
@@ -204,5 +209,12 @@ public class TeacherService {
             grade.getCreatedAt(),
             grade.getUpdatedAt()
         );
+    }
+
+    private String generateTempPassword() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[16];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes).substring(0, 12);
     }
 }

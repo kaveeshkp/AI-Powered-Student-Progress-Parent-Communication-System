@@ -13,6 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 /**
  * Service for Attendance business logic.
@@ -113,8 +119,27 @@ public class AttendanceService {
 
     public byte[] generateReport(LocalDate from, LocalDate to) {
         log.info("Generating attendance report: from={}, to={}", from, to);
-        // TODO: Implement CSV export
-        return new byte[0];
+        
+        List<Attendance> attendances = attendanceRepository.findAllByDateBetween(from, to);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (CSVPrinter printer = new CSVPrinter(new PrintWriter(out), CSVFormat.DEFAULT.builder()
+                .setHeader("Student ID", "Student Name", "Date", "Status", "Remark")
+                .build())) {
+            for (Attendance a : attendances) {
+                printer.printRecord(
+                    a.getStudent().getId(),
+                    a.getStudent().getFullName(),
+                    a.getDate(),
+                    a.getStatus(),
+                    a.getRemark()
+                );
+            }
+        } catch (IOException e) {
+            log.error("CSV export failed", e);
+            throw new RuntimeException("Report generation failed", e);
+        }
+        log.info("CSV report generated: {} records", attendances.size());
+        return out.toByteArray();
     }
 
     private AttendanceDTO toDTO(Attendance attendance) {

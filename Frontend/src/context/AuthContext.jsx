@@ -55,7 +55,9 @@ export function AuthProvider({ children }) {
       setSession(data.token, data);
       return data;
     } catch (error) {
-      console.error("[Login Error]", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("[Login Error]", error);
+      }
       throw error;
     }
   };
@@ -66,7 +68,9 @@ export function AuthProvider({ children }) {
       setSession(data.token, data);
       return data;
     } catch (error) {
-      console.error("[Register Error]", error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("[Register Error]", error);
+      }
       throw error;
     }
   };
